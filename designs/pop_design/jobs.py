@@ -3,7 +3,7 @@
 from nautobot_design_builder.design_job import DesignJob
 
 from nautobot.dcim.models import Device, VirtualChassis
-from nautobot.extras.jobs import StringVar
+from nautobot.extras.jobs import StringVar, BooleanVar
 
 from .context import (
     BranchContext,
@@ -55,13 +55,13 @@ class CreateBranch(DesignJob):
     site_facility = StringVar(
         description="Facility of the new site", label="Facility Name"
     )
-    status = StringVar(description="Status the new site", label="Facility Name")
+    status = StringVar(description="Status the new site", label="Site Status")
     site_latitude = StringVar(description="Site latitude", label="Site latitude")
     site_longitude = StringVar(description="Longitude", label="Longitude")
     physical_address = StringVar(
         description="Physical Address", label="Physical Address"
     )
-    has_experimental_sdwan_deployment = StringVar(
+    has_experimental_sdwan_deployment = BooleanVar(
         description="Experimental SDWAN", label="Experimental SDWAN"
     )
 
