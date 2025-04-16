@@ -21,7 +21,7 @@ class CreateBase(DesignJob):
         name = "Branch: Stage #1 - Deploy branch base elements"
         commit_default = True
         description = "Use this form to create base for branch in clean Nautobot"
-        design_file = "design_files/templates/branch/100_branch_base_elements.yaml.j2"
+        design_file = "designs/0001_base.yaml.j2"
         context_class = BaseContext
         # report = "design_files/templates/backbone/pops_report.md.j2"
         has_sensitive_variables = False
@@ -71,7 +71,7 @@ class CreateBranch(DesignJob):
         name = "Branch: Stage #2 - Deploy branch"
         commit_default = True
         description = "Use this form to create branch in clean Nautobot"
-        design_file = "design_files/templates/branch/200_branch.yaml.j2"
+        design_file = "designs/0002_branch.yaml.j2"
         context_class = BranchContext
         # report = "design_files/templates/backbone/pops_report.md.j2"
         has_sensitive_variables = False
