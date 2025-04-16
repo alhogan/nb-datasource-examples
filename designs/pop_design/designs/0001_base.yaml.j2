@@ -84,7 +84,7 @@ location_types:
                           - { "!get:model": "circuittermination" }
                           - { "!get:model": "powerpanel" }
                         "id": "{{ 'IDF' | deterministic_uuid('location_types') }}"
-                        
+
 roles:
   - "!create_or_update:name": "{{ global_branch_container_role_name }}"
     description: "Global Branch Container"
@@ -284,7 +284,7 @@ prefixes:
     "id": "{{ global_branch_container | deterministic_uuid('prefixes') }}"
 
 # location_types:
-{% include "design_files/templates/_shared_includes/020_location_types.j2" %}
+{# {% include "design_files/templates/_shared_includes/020_location_types.j2" %} #}
 
 locations:
   - "!create_or_update:name": "AMER"
