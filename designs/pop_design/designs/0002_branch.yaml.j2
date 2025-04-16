@@ -292,6 +292,17 @@ power_feeds:
     max_utilization: 80
     "!ref": "power_feed_{{ site_name | lower }}-pdu-02"
 
+# Create tags:
+tags:
+  - "!create_or_update:name": "access_switch_a_allocation"
+    #slug: "access_switch_a_allocation"
+    "!ref": "access_switch_a_allocation_tag"
+    "id": "{{ 'access_switch_a_allocation' | deterministic_uuid('tags') }}"
+  - "!create_or_update:name": "access_switch_b_allocation"
+    #slug: "access_switch_b_allocation"
+    "!ref": "access_switch_b_allocation_tag"
+    "id": "{{ 'access_switch_b_allocation' | deterministic_uuid('tags') }}"
+
 device_redundancy_groups:
   - "!create_or_update:name": "{{ site_name | upper }} Branch Routers"
     status__name: "Active"
