@@ -1,0 +1,1029 @@
+---
+location_types:
+  - "!create_or_update:name": "Region"
+    "description": "Region / Continent"
+    content_types:
+      - { "!get:model": "controller" }
+    "!ref": "super_region_loc_type"
+    "id": "{{ 'Region' | deterministic_uuid('location_types') }}"
+    children:
+      - "!create_or_update:name": "Sub Region"
+        description: "Sub Regions"
+        "!ref": "region_loc_type"
+        "id": "{{ 'Sub Region' | deterministic_uuid('location_types') }}"
+        children:
+          - "!create_or_update:name": "Branch"
+            description: "Branch / Site"
+            content_types:
+              - { "!get:model": "device" }
+              - { "!get:model": "rack" }
+              - { "!get:model": "prefix" }
+              - { "!get:model": "vlan" }
+              - { "!get:model": "vlangroup" }
+              - { "!get:model": "circuittermination" }
+              - { "!get:model": "powerpanel" }
+            "!ref": "branch_loc_type"
+            "id": "{{ 'Branch' | deterministic_uuid('location_types') }}"
+          - "!create_or_update:name": "Data Center"
+            description: "DC (Data Center)"
+            content_types:
+              - { "!get:model": "device" }
+              - { "!get:model": "rack" }
+              - { "!get:model": "prefix" }
+              - { "!get:model": "vlan" }
+              - { "!get:model": "vlangroup" }
+              - { "!get:model": "circuittermination" }
+              - { "!get:model": "controller" }
+              - { "!get:model": "powerpanel" }
+            "!ref": "dc_loc_type"
+            "id": "{{ 'Data Center' | deterministic_uuid('location_types') }}"
+          - "!create_or_update:name": "Campus"
+            description: "Campus"
+            content_types:
+              - { "!get:model": "device" }
+              - { "!get:model": "rack" }
+              - { "!get:model": "prefix" }
+              - { "!get:model": "vlan" }
+              - { "!get:model": "vlangroup" }
+              - { "!get:model": "circuittermination" }
+              - { "!get:model": "powerpanel" }
+            "id": "{{ 'Campus' | deterministic_uuid('location_types') }}"
+            children:
+              - "!create_or_update:name": "Building"
+                description: "Buildings in campus"
+                content_types:
+                  - { "!get:model": "device" }
+                  - { "!get:model": "rack" }
+                  - { "!get:model": "prefix" }
+                  - { "!get:model": "vlan" }
+                  - { "!get:model": "vlangroup" }
+                  - { "!get:model": "circuittermination" }
+                  - { "!get:model": "powerpanel" }
+                "id": "{{ 'Building' | deterministic_uuid('location_types') }}"
+                children:
+                  - "!create_or_update:name": "Floor"
+                    description: "Floors in campus buildings"
+                    content_types:
+                      - { "!get:model": "device" }
+                      - { "!get:model": "rack" }
+                      - { "!get:model": "prefix" }
+                      - { "!get:model": "vlan" }
+                      - { "!get:model": "vlangroup" }
+                      - { "!get:model": "circuittermination" }
+                      - { "!get:model": "powerpanel" }
+                    "id": "{{ 'Floor' | deterministic_uuid('location_types') }}"
+                    children:
+                      - "!create_or_update:name": "IDF"
+                        description: "IDFs in campus buildings"
+                        content_types:
+                          - { "!get:model": "device" }
+                          - { "!get:model": "rack" }
+                          - { "!get:model": "prefix" }
+                          - { "!get:model": "vlan" }
+                          - { "!get:model": "vlangroup" }
+                          - { "!get:model": "circuittermination" }
+                          - { "!get:model": "powerpanel" }
+                        "id": "{{ 'IDF' | deterministic_uuid('location_types') }}"
+                        
+roles:
+  - "!create_or_update:name": "{{ global_branch_container_role_name }}"
+    description: "Global Branch Container"
+    content_types:
+      - { "!get:model": "prefix" }
+    "!ref": "global_branch_container_role"
+    "id": "{{ global_branch_container_role_name | deterministic_uuid('roles') }}"
+  - "!create_or_update:name": "SDA"
+    description: "SDA Role"
+    content_types:
+      - { "!get:model": "controller" }
+    "id": "{{ 'SDA' | deterministic_uuid('roles') }}"
+  - "!create_or_update:name": "Security"
+    description: "Firewall / Security"
+    content_types:
+      - { "!get:model": "controller" }
+    "id": "{{ 'Security' | deterministic_uuid('roles') }}"
+  - "!create_or_update:name": "sdwan_edge"
+    color: "ff9800"
+    content_types:
+      - { "!get:model": "device" }
+    "id": "{{ 'sdwan_edge' | deterministic_uuid('roles') }}"
+  - "!create_or_update:name": "wireless"
+    color: "673ab7"
+    content_types:
+      - "!get:app_label": "dcim"
+        "!get:model": "device"
+      - "!get:app_label": "ipam"
+        "!get:model": "vlan"
+    "id": "{{ 'wireless' | deterministic_uuid('roles') }}"
+  - "!create_or_update:name": "wireless_controller"
+    color: "ff9800"
+    content_types:
+      - "!get:app_label": "dcim"
+        "!get:model": "device"
+    "id": "{{ 'wireless_controller' | deterministic_uuid('roles') }}"
+
+  - "!create_or_update:name": "branch_wan"
+    color: "3f51b5"
+    content_types:
+      - { "!get:model": "device" }
+      - { "!get:model": "interface" }
+    "!ref": "branch_wan_role"
+    "id": "{{ 'branch_wan' | deterministic_uuid('roles') }}"
+
+
+##### DCIM specific roles
+  - "!create_or_update:name": "{{ branch_distribution_role }}"
+    color: "673ab7"
+    content_types:
+      - { "!get:model": "device" }
+      - { "!get:model": "interface" }
+    "!ref": "branch_distribution_role"
+    "id": "{{ branch_distribution_role | deterministic_uuid('roles') }}"
+
+  - "!create_or_update:name": "{{ branch_access_role }}"
+    color: "673ab7"
+    content_types:
+      - { "!get:model": "device" }
+      - { "!get:model": "interface" }
+    "!ref": "branch_access_role"
+    "id": "{{ branch_access_role | deterministic_uuid('roles') }}"
+
+  - "!create_or_update:name": "branch_ap"
+    color: "3f41b5"
+    content_types:
+      - { "!get:model": "device" }
+    "!ref": "branch_ap"
+    "id": "{{ 'branch_ap' | deterministic_uuid('roles') }}"
+
+
+##### IPAM specific roles
+  - "!create_or_update:name": "{{ branch_container_role_name }}"
+    description: "Branch Specific Container"
+    content_types:
+      - { "!get:model": "prefix" }
+    "!ref": "branch_container"
+    "id": "{{ branch_container_role_name | deterministic_uuid('roles') }}"
+
+  - "!create_or_update:name": "branch_infrastructure"
+    description: "Branch Infrastructure"
+    content_types:
+      - { "!get:model": "prefix" }
+    "!ref": "branch_infrastructure"
+    "id": "{{ 'branch_infrastructure' | deterministic_uuid('roles') }}"
+
+  - "!create_or_update:name": "branch_loopback"
+    description: "Branch Loopback"
+    "content_types":
+      - { "!get:model": "prefix", "!get:app_label": "ipam" }
+      - { "!get:model": "ipaddress", "!get:app_label": "ipam" }
+    "!ref": "branch_loopback"
+    "id": "{{ 'branch_loopback' | deterministic_uuid('roles') }}"
+
+  - "!create_or_update:name": "branch_data"
+    description: "Branch Data"
+    content_types:
+      - { "!get:model": "prefix" }
+    "!ref": "branch_data"
+    "id": "{{ 'branch_data' | deterministic_uuid('roles') }}"
+
+  - "!create_or_update:name": "branch_voice"
+    description: "Branch Voice"
+    content_types:
+      - { "!get:model": "prefix" }
+    "!ref": "branch_voice"
+    "id": "{{ 'branch_voice' | deterministic_uuid('roles') }}"
+
+  - "!create_or_update:name": "branch_vrrp"
+    description: "Branch VRRP"
+    content_types:
+      - { "!get:model": "prefix" }
+      - { "!get:model": "ipaddress", "!get:app_label": "ipam" }
+    "!ref": "branch_vrrp"
+    "id": "{{ 'branch_vrrp' | deterministic_uuid('roles') }}"
+
+secrets:
+  - "!create_or_update:name": "Wireless_PSK"
+    provider: "environment-variable"
+    parameters: {'variable': 'PSK'}
+    "!ref": "PSK"
+    "id": "{{ 'Wireless_PSK' | deterministic_uuid('secrets') }}"
+
+secrets_groups:
+  - "!create_or_update:name": "Wireless Secrets Group"
+    "!ref": "wireless_secrets_group"
+    "id": "{{ 'Wireless Secrets Group' | deterministic_uuid('secrets_groups') }}"
+
+secrets_group_associations:
+  - "!create_or_update:secrets_group": "!ref:wireless_secrets_group"
+    "!create_or_update:secret": "!ref:PSK"
+    "!create_or_update:access_type": "Generic"
+    "!create_or_update:secret_type": "key"
+
+teams:
+  - "!create_or_update:name": "ACME Corporate AMER Eng Team"
+    phone: "+1-917-438-1111"
+    email: "corp@acme.net"
+    address: "Jersey City"
+    "id": "{{ 'ACME Corporate AMER Eng Team' | deterministic_uuid('teams') }}"
+    contacts:
+      - "!create_or_update:name": "Blake Martin"
+        "id": "{{ 'Blake Martin' | deterministic_uuid('contacts') }}"
+      - "!create_or_update:name": "John Smith"
+        "id": "{{ 'John Smith' | deterministic_uuid('contacts') }}"
+
+  - "!create_or_update:name": "ACME Corporate EMEA Eng Team"
+    phone: "+49-2744-7941111"
+    email: "corp@acme.net"
+    address: "Frankfurt"
+    "id": "{{ 'ACME Corporate EMEA Eng Team' | deterministic_uuid('teams') }}"
+    contacts:
+      - "!create_or_update:name": "Karl Schneider"
+        "id": "{{ 'Karl Schneider' | deterministic_uuid('contacts') }}"
+      - "!create_or_update:name": "Erik Fischer"
+        "id": "{{ 'Erik Fischer' | deterministic_uuid('contacts') }}"
+
+  - "!create_or_update:name": "ACME Corporate APAC Eng Team"
+    phone: "+81-20-448-1111"
+    email: "corp@acme.net"
+    address: "Tokyo"
+    "id": "{{ 'ACME Corporate APAC Eng Team' | deterministic_uuid('teams') }}"
+    contacts:
+      - "!create_or_update:name": "Hiro Tanaka"
+        "id": "{{ 'Hiro Tanaka' | deterministic_uuid('contacts') }}"
+      - "!create_or_update:name": "Sora Nakamura"
+        "id": "{{ 'Sora Nakamura' | deterministic_uuid('contacts') }}"
+
+metadata_types:
+  - content_types:
+      - { "!get:model": "device" }
+    "!create_or_update:name": "Device Owner"
+    description: "Device owner"
+    data_type: "contact-or-team"
+    "id": "{{ 'Device Owner' | deterministic_uuid('metadata_types') }}"
+
+  - content_types:
+      - { "!get:model": "prefix" }
+    "!create_or_update:name": "Prefix Profile"
+    description: "Profile of IP Space usage"
+    data_type: "text"
+    "id": "{{ 'Prefix Profile' | deterministic_uuid('metadata_types') }}"
+
+namespaces:
+  - "!create_or_update:name": "branch"
+    "description": "Branch IP Namespace"
+    "id": "{{ 'branch' | deterministic_uuid('namespaces') }}"
+
+prefixes:
+
+  # Ensure global_branch_container
+  - "!create_or_update:prefix": "{{ global_branch_container }}"
+    description: "Global Container for all Branches"
+    "namespace__name": "branch"
+    role: "!ref:global_branch_container_role"
+    status__name: "Active"
+    "id": "{{ global_branch_container | deterministic_uuid('prefixes') }}"
+
+# location_types:
+{% include "design_files/templates/_shared_includes/020_location_types.j2" %}
+
+locations:
+  - "!create_or_update:name": "AMER"
+    location_type: "!ref:super_region_loc_type"
+    status__name: "Active"
+    "id": "{{ 'AMER' | deterministic_uuid('locations') }}"
+
+  - "!create_or_update:name": "APAC"
+    location_type: "!ref:super_region_loc_type"
+    status__name: "Active"
+    "id": "{{ 'APAC' | deterministic_uuid('locations') }}"
+
+  - "!create_or_update:name": "EMEA"
+    location_type: "!ref:super_region_loc_type"
+    status__name: "Active"
+    "id": "{{ 'EMEA' | deterministic_uuid('locations') }}"
+
+# Manufacturers
+manufacturers:
+  - "!create_or_update:name": "Cisco"
+    description: "Cisco Systems, Inc."
+    "!ref": "manufacturer_cisco"
+    "id": "{{ 'Cisco' | deterministic_uuid('manufacturers') }}"
+  - "!create_or_update:name": "Palo Alto"
+    description: "Palo Alto Networks"
+    "!ref": "manufacturer_palo_alto"
+    "id": "{{ 'Palo Alto' | deterministic_uuid('manufacturers') }}"
+  - "!create_or_update:name": "HPE Aruba"
+    description: "HPE Aruba"
+    "!ref": "manufacturer_aruba"
+    "id": "{{ 'HPE Aruba' | deterministic_uuid('manufacturers') }}"
+
+
+# Platforms
+platforms:
+  - "!create_or_update:name": "Cisco DNAC"
+    description: "Cisco DNAC"
+    "manufacturer": "!ref:manufacturer_cisco"
+    "!ref": "platform_cisco_dnac"
+    "id": "{{ 'Cisco DNAC' | deterministic_uuid('platforms') }}"
+  - "!create_or_update:name": "Cisco ACI"
+    description: "Cisco ACI"
+    "manufacturer": "!ref:manufacturer_cisco"
+    "!ref": "platform_cisco_aci"
+    "id": "{{ 'Cisco ACI' | deterministic_uuid('platforms') }}"
+  - "!create_or_update:name": "HPE Aruba"
+    description: "HPE Aruba"
+    "network_driver": "aruba_aoscx"
+    "manufacturer": "!ref:manufacturer_aruba"
+    "!ref": "platform_aruba"
+    "id": "{{ 'HPE Aruba' | deterministic_uuid('platforms') }}"
+  - "!create_or_update:name": "Panorama"
+    description: "Palo Alto Panorama"
+    "network_driver": "paloalto_panos"
+    "manufacturer": "!ref:manufacturer_palo_alto"
+    "!ref": "platform_panorama"
+    "id": "{{ 'Panorama' | deterministic_uuid('platforms') }}"
+
+tenant_groups:
+  - "!create_or_update:name": "Global IT (Network Engineering)"
+    "!ref": "tenant_group_it_facilities"
+    "id": "{{ 'Global IT (Network Engineering)' | deterministic_uuid('tenant_groups') }}"
+    tenants:
+      - "!create_or_update:name": "AMER Net Eng"
+        #" group": "!ref:tenant_group_it_facilities"
+        "description": "AMER Region Network Engineers"
+        "id": "{{ 'region-AMER Net Eng' | deterministic_uuid('tenants') }}"
+      - "!create_or_update:name": "APAC Net Eng"
+        # "group": "!ref:tenant_group_it_facilities"
+        "description": "Network Engineers in APAC"
+        "id": "{{ 'region-APAC Net Eng' | deterministic_uuid('tenants') }}"
+      - "!create_or_update:name": "EMEA Net Eng"
+        # "group": "!ref:tenant_group_it_facilities"
+        "description": "EMEA network engineers"
+        "id": "{{ 'region-EMEA Net Eng' | deterministic_uuid('tenants') }}"
+
+controllers:
+  - "!create_or_update:name": "dnac01.acme.net"
+    status__name: "Active"
+    description: "Cisco DNAC Controller for AMER Super Region"
+    platform: "!ref:platform_cisco_dnac"
+    tenant__name: "AMER Net Eng"
+    location__name: "AMER"
+    role__name: "SDA"
+    "id": "{{ 'dnac01.acme.net' | deterministic_uuid('controllers') }}"
+    external_integration:
+      "!create_or_update:name": "dnac01.acme.net"
+      remote_url: "https://cisco-amer.acme.net:6330/"
+      timeout: 30
+      "id": "{{ 'dnac01.acme.net' | deterministic_uuid('external_integrations') }}"
+  - "!create_or_update:name": "dnac03.acme.net"
+    status__name: "Active"
+    description: "Cisco DNAC Controller for EMEA Super Region"
+    platform: "!ref:platform_cisco_dnac"
+    tenant__name: "EMEA Net Eng"
+    location__name: "EMEA"
+    role__name: "SDA"
+    "id": "{{ 'dnac03.acme.net' | deterministic_uuid('controllers') }}"
+    external_integration:
+      "!create_or_update:name": "dnac03.acme.net"
+      remote_url: "https://cisco-emea.acme.net:6330/"
+      timeout: 30
+      "id": "{{ 'dnac03.acme.net' | deterministic_uuid('external_integrations') }}"
+    
+  - "!create_or_update:name": "dnac02.acme.net"
+    status__name: "Active"
+    description: "Cisco DNAC Controller for APAC Super Region"
+    platform: "!ref:platform_cisco_dnac"
+    tenant__name: "APAC Net Eng"
+    location__name: "APAC"
+    role__name: "SDA"
+    "id": "{{ 'dnac02.acme.net' | deterministic_uuid('controllers') }}"
+    external_integration:
+      "!create_or_update:name": "dnac03.acme.net (Cisco DNAC APAC)"
+      remote_url: "https://cisco-apac.acme.net:6330/"
+      timeout: 30
+      "id": "{{ 'dnac02.acme.net' | deterministic_uuid('external_integrations') }}"
+  - "!create_or_update:name": "pano01.acme.net"
+    status__name: "Active"
+    description: "Palo Alto Panorama for AMER Super Region"
+    platform: "!ref:platform_panorama"
+    tenant__name: "AMER Net Eng"
+    location__name: "AMER"
+    role__name: "Security"
+    "id": "{{ 'pano01.acme.net' | deterministic_uuid('controllers') }}"
+    external_integration:
+      "!create_or_update:name": "PAN (AMER)"
+      remote_url: "https://panorama.acme.net:8443/"
+      timeout: 30
+      "id": "{{ 'pano01.acme.net' | deterministic_uuid('external_integrations') }}"
+  - "!create_or_update:name": "apic01.acme.net"
+    status__name: "Active"
+    description: "Cisco APIC 01 for AMER"
+    platform: "!ref:platform_cisco_aci"
+    tenant__name: "AMER Net Eng"
+    location__name: "AMER"
+    "id": "{{ 'apic01.acme.net' | deterministic_uuid('controllers') }}"
+    external_integration:
+      "!create_or_update:name": "ACI (AMER)"
+      remote_url: "https://aci-amer.acme.net/"
+      timeout: 30
+      "id": "{{ 'apic01.acme.net' | deterministic_uuid('external_integrations') }}"
+  - "!create_or_update:name": "wireless.acme.net"
+    status__name: "Active"
+    description: "HPE Aruba"
+    platform: "!ref:platform_aruba"
+    tenant__name: "AMER Net Eng"
+    location__name: "AMER"
+    "id": "{{ 'wireless.acme.net' | deterministic_uuid('controllers') }}"
+    capabilities:
+      - "wireless"
+    external_integration:
+      "!create_or_update:name": "Aruba (AMER)"
+      remote_url: "https://aruba.acme.net/"
+      timeout: 30
+      "id": "{{ 'wireless.acme.net' | deterministic_uuid('external_integrations') }}"
+  - "!create_or_update:name": "cat01.acme.net"
+    status__name: "Active"
+    description: "External Controller Cisco Catalyst SD-WAN (formally vManage)"
+    tenant__name: "AMER Net Eng"
+    location__name: "AMER"
+    "id": "{{ 'cat01.acme.net' | deterministic_uuid('controllers') }}"
+    external_integration:
+        "!create_or_update:name": "cat01.acme.net"
+        remote_url: "https://vmanage.cisco.com"
+        "!ref": "cisco_catalyst_sdwan"
+        "id": "{{ 'cat01.acme.net' | deterministic_uuid('controllers') }}"
+
+
+controller_managed_device_groups:
+  - "!create_or_update:name": "AMER SDA Switches"
+    controller__name: "dnac01.acme.net"
+    "id": "{{ 'AMER SDA Switches' | deterministic_uuid('controller_managed_device_groups') }}"
+  - "!create_or_update:name": "APAC SDA Switches"
+    controller__name: "dnac02.acme.net"
+    "id": "{{ 'APAC SDA Switches' | deterministic_uuid('controller_managed_device_groups') }}"
+  - "!create_or_update:name": "EMEA SDA Switches"
+    controller__name: "dnac03.acme.net"
+    "id": "{{ 'EMEA SDA Switches' | deterministic_uuid('controller_managed_device_groups') }}"
+  - "!create_or_update:name": "cat01.acme.net Devices"
+    controller__name: "cat01.acme.net"
+    "id": "{{ 'cat01.acme.net Devices' | deterministic_uuid('controller_managed_device_groups') }}"
+  - "!create_or_update:name": "Aruba Wireless Devices"
+    controller__name: "wireless.acme.net"
+    "id": "{{ 'Aruba Wireless Devices' | deterministic_uuid('controller_managed_device_groups') }}"
+    capabilities:
+      - "wireless"
+    "!ref": "aruba_wireless_devices"
+
+supported_data_rates:
+  - "!create_or_update:standard": "802.11b"
+    "!create_or_update:rate": "1000"
+    "!ref": "80211b-1000"
+    "id": "{{ '802.11b' | deterministic_uuid('supported_data_rates') }}"
+  - "!create_or_update:standard": "802.11g"
+    "!create_or_update:rate": "5000"
+    "!ref": "80211g-5000"
+    "id": "{{ '802.11g' | deterministic_uuid('supported_data_rates') }}"
+  - "!create_or_update:standard": "802.11n"
+    "!create_or_update:rate": "10000"
+    "!ref": "80211n-10000"
+    "id": "{{ '802.11n' | deterministic_uuid('supported_data_rates') }}"
+  - "!create_or_update:standard": "802.11ac"
+    "!create_or_update:rate": "20000"
+    "!ref": "80211ac-20000"
+    "id": "{{ '802.11a' | deterministic_uuid('supported_data_rates') }}"
+  - "!create_or_update:standard": "802.11ax"
+    "!create_or_update:rate": "40000"
+    "!ref": "80211ax-40000"
+    "id": "{{ '802.11ax' | deterministic_uuid('supported_data_rates') }}"
+
+radio_profiles:
+  - "!create_or_update:name": "802.11b"
+    regulatory_domain: "US"
+    allowed_channel_list:
+      - 1
+      - 6
+      - 11
+    tx_power_min: 10
+    tx_power_max: 20
+    rx_power_min: -10
+    supported_data_rates:
+      - "!ref:80211b-1000"
+    "!ref": "profile_80211b"
+    "id": "{{ '802.11b' | deterministic_uuid('radio_profiles') }}"
+  - "!create_or_update:name": "802.11g"
+    regulatory_domain: "US"
+    supported_data_rates:
+      - "!ref:80211g-5000"
+    "!ref": "profile_80211g"
+    "id": "{{ '802.11g' | deterministic_uuid('radio_profiles') }}"
+  - "!create_or_update:name": "802.11n"
+    channel_width:
+      - 20
+      - 40
+    regulatory_domain: "US"
+    supported_data_rates:
+      - "!ref:80211n-10000"
+    "!ref": "profile_80211n"
+    "id": "{{ '802.11n' | deterministic_uuid('radio_profiles') }}"
+  - "!create_or_update:name": "802.11ac"
+    channel_width:
+      - 20
+      - 40
+      - 80
+      - 160
+    regulatory_domain: "US"
+    supported_data_rates:
+      - "!ref:80211ac-20000"
+    "!ref": "profile_80211ac"
+    "id": "{{ '802.11ac' | deterministic_uuid('radio_profiles') }}"
+  - "!create_or_update:name": "802.11ax"
+    channel_width:
+      - 20
+      - 40
+      - 80
+      - 160
+    regulatory_domain: "US"
+    supported_data_rates:
+      - "!ref:80211ax-40000"
+    "!ref": "profile_80211ax"
+    "id": "{{ '802.11ax' | deterministic_uuid('radio_profiles') }}"
+
+wireless_networks:
+  - "!create_or_update:name": "Corporate"
+    description: "Protected corp network"
+    ssid: "Corporate"
+    mode: "Fabric"
+    authentication: "WPA3 Enterprise 192Bit"
+    secrets_group: "!ref:wireless_secrets_group"
+    hidden: False
+    enabled: True
+    "!ref": "wireless_network_1"
+    "id": "{{ 'Corporate' | deterministic_uuid('wireless_networks') }}"
+  - "!create_or_update:name": "BYOD"
+    description: "Personal devices - Corp"
+    ssid: "BYOD"
+    mode: "Fabric"
+    authentication: "WPA3 Personal"
+    secrets_group: "!ref:wireless_secrets_group"
+    hidden: True
+    enabled: False
+    "!ref": "wireless_network_2"
+    "id": "{{ 'BYOD' | deterministic_uuid('wireless_networks') }}"
+  - "!create_or_update:name": "Guest"
+    description: "Wifi for Corp guests"
+    ssid: "Guest"
+    mode: "Local (Flex)"
+    authentication: "Open"
+    hidden: False
+    enabled: True
+    "!ref": "wireless_network_3"
+    "id": "{{ 'Guest' | deterministic_uuid('wireless_networks') }}"
+  - "!create_or_update:name": "IoT"
+    description: "Plant IoT devices - wifi"
+    ssid: "IoT"
+    mode: "Bridge"
+    authentication: "WPA2 Personal"
+    hidden: True
+    enabled: False
+    "!ref": "wireless_network_4"
+    "id": "{{ 'IoT' | deterministic_uuid('wireless_networks') }}"
+
+vlans:
+  # Branch Data VLAN
+  - "!create_or_update:vid": "301"
+    name: "Wireless - Corporate"
+    status__name: "Active"
+    role__name: "wireless"
+    description: "Wireless Corporate"
+    "!ref": "wireless_301"
+    "id": "{{ 'Wireless - Corporate-`301' | deterministic_uuid('vlans') }}"
+  - "!create_or_update:vid": "302"
+    name: "Wireless - BYOD"
+    status__name: "Active"
+    role__name: "wireless"
+    description: "Wireless BYOD"
+    "!ref": "wireless_302"
+    "id": "{{ 'Wireless - BYOD-`302' | deterministic_uuid('vlans') }}"
+  - "!create_or_update:vid": "303"
+    name: "Wireless - Guest"
+    status__name: "Active"
+    role__name: "wireless"
+    description: "Wireless Guest"
+    "!ref": "wireless_303"
+    "id": "{{ 'Wireless - Guest-`303' | deterministic_uuid('vlans') }}"
+  - "!create_or_update:vid": "304"
+    name: "Wireless - IoT"
+    status__name: "Active"
+    role__name: "wireless"
+    description: "Wireless IoT"
+    "!ref": "wireless_304"
+    "id": "{{ 'Wireless - IoT-`304' | deterministic_uuid('vlans') }}"
+
+controller_managed_device_group_wireless_network_assignments:
+  - "!create_or_update:controller_managed_device_group": "!ref:aruba_wireless_devices"
+    "!create_or_update:wireless_network": "!ref:wireless_network_1"
+    vlan: "!ref:wireless_301"
+  - "!create_or_update:controller_managed_device_group": "!ref:aruba_wireless_devices"
+    "!create_or_update:wireless_network": "!ref:wireless_network_2"
+    vlan: "!ref:wireless_302"
+  - "!create_or_update:controller_managed_device_group": "!ref:aruba_wireless_devices"
+    "!create_or_update:wireless_network": "!ref:wireless_network_3"
+    vlan: "!ref:wireless_303"
+  - "!create_or_update:controller_managed_device_group": "!ref:aruba_wireless_devices"
+    "!create_or_update:wireless_network": "!ref:wireless_network_4"
+    vlan: "!ref:wireless_304"
+
+controller_managed_device_group_radio_profile_assignments:
+  - "!create_or_update:controller_managed_device_group": "!ref:aruba_wireless_devices"
+    "!create_or_update:radio_profile": "!ref:profile_80211b"
+  - "!create_or_update:controller_managed_device_group": "!ref:aruba_wireless_devices"
+    "!create_or_update:radio_profile": "!ref:profile_80211g"
+  - "!create_or_update:controller_managed_device_group": "!ref:aruba_wireless_devices"
+    "!create_or_update:radio_profile": "!ref:profile_80211n"
+  - "!create_or_update:controller_managed_device_group": "!ref:aruba_wireless_devices"
+    "!create_or_update:radio_profile": "!ref:profile_80211ac"
+  - "!create_or_update:controller_managed_device_group": "!ref:aruba_wireless_devices"
+    "!create_or_update:radio_profile": "!ref:profile_80211ax"
+
+circuit_types:
+  - "!create_or_update:name": "Dark Fiber"
+    description: "Dark Fiber"
+    "id": "{{ 'Dark Fiber' | deterministic_uuid('circuit_types') }}"
+  - "!create_or_update:name": "IX"
+    description: "IX"
+    "id": "{{ 'IX' | deterministic_uuid('circuit_types') }}"
+  - "!create_or_update:name": "MPLS"
+    description: "MPLS"
+    "id": "{{ 'MPLS' | deterministic_uuid('circuit_types') }}"
+  - "!create_or_update:name": "Private Peering"
+    description: "Private Peering"
+    "id": "{{ 'Private Peering' | deterministic_uuid('circuit_types') }}"
+  - "!create_or_update:name": "Transit"
+    description: "Transit"
+    "id": "{{ 'Transit' | deterministic_uuid('circuit_types') }}"
+
+providers:
+  - "!create_or_update:name": "AT&T"
+    asn: 7018
+    account: "A4829177802"
+    "id": {{ 'AT&T' | deterministic_uuid('providers') }}
+  - "!create_or_update:name": "British Telecom"
+    asn: 2856
+    account: "92X8K3CXU8907"
+    "id": {{ 'British Telecom' | deterministic_uuid('providers') }}
+  - "!create_or_update:name": "Cogent"
+    asn: 174
+    account: "01947362-328"
+    "id": {{ 'Cogent' | deterministic_uuid('providers') }}
+  - "!create_or_update:name": "Colt"
+    asn: 8220
+    account: "7A9283"
+    "id": {{ 'Colt' | deterministic_uuid('providers') }}
+  - "!create_or_update:name": "Deutsche Telekom"
+    asn: 3320
+    account: "K983214HH10"
+    "id": {{ 'Deutsche Telekom' | deterministic_uuid('providers') }}
+  - "!create_or_update:name": "GTT"
+    asn: 3257
+    account: "GTT/641293"
+    "id": {{ 'GTT' | deterministic_uuid('providers') }}
+  - "!create_or_update:name": "Liberty Global"
+    asn: 6830
+    account: "3847-2K"
+    "id": {{ 'Liberty Global' | deterministic_uuid('providers') }}
+  - "!create_or_update:name": "Lumen Technologies"
+    asn: 3356
+    account: "5821914313"
+    "id": {{ 'Lumen Technologies' | deterministic_uuid('providers') }}
+  - "!create_or_update:name": "NTT"
+    asn: 2914
+    account: "81374IX010378"
+    "id": {{ 'NTT' | deterministic_uuid('providers') }}
+  - "!create_or_update:name": "Orange"
+    asn: 5511
+    account: "RO128-947X"
+    "id": {{ 'Orange' | deterministic_uuid('providers') }}
+  - "!create_or_update:name": "PCCW Global"
+    asn: 3491
+    account: "57289144"
+    "id": {{ 'PCCW Global' | deterministic_uuid('providers') }}
+  - "!create_or_update:name": "Sprint"
+    asn: 1239
+    account: "PSR901827"
+    "id": {{ 'Sprint' | deterministic_uuid('providers') }}
+  - "!create_or_update:name": "Tata Communications"
+    asn: 6453
+    account: "012S739182"
+    "id": {{ 'Tata Communications' | deterministic_uuid('providers') }}
+  - "!create_or_update:name": "Telecom Italia"
+    asn: 6762
+    account: "234678"
+    "id": {{ 'Telecom Italia' | deterministic_uuid('providers') }}
+  - "!create_or_update:name": "Telia Carrier"
+    asn: 1299
+    account: "1299-4917"
+    "id": {{ 'Telia Carrier' | deterministic_uuid('providers') }}
+  - "!create_or_update:name": "Telxius"
+    asn: 12956
+    account: "LTS793-482"
+    "id": {{ 'Telxius' | deterministic_uuid('providers') }}
+  - "!create_or_update:name": "Verizon"
+    asn: 701
+    account: "V381092"
+    "id": {{ 'Verizon' | deterministic_uuid('providers') }}
+  - "!create_or_update:name": "Zayo"
+    asn: 541
+    account: "ZHU.192837"
+    "id": {{ 'Zayo' | deterministic_uuid('providers') }}
+
+
+provider_networks:
+  - provider__name: "AT&T"
+    "!create_or_update:name": "AT&T Provider Network"
+    "id": {{ 'AT&T Provider Network' | deterministic_uuid('provider_networks') }}
+  - provider__name: "British Telecom"
+    "!create_or_update:name": "British Telecom Provider Network"
+    "id": {{ 'British Telecom Provider Network' | deterministic_uuid('provider_networks') }}
+  - provider__name: "Cogent"
+    "!create_or_update:name": "Cogent Provider Network"
+    "id": {{ 'Cogent Provider Network' | deterministic_uuid('provider_networks') }}
+  - provider__name: "Colt"
+    "!create_or_update:name": "Colt Provider Network"
+    "id": {{ 'Colt Provider Network' | deterministic_uuid('provider_networks') }}
+  - provider__name: "Deutsche Telekom"
+    "!create_or_update:name": "DT Provider Network"
+    "id": {{ 'DT Provider Network' | deterministic_uuid('provider_networks') }}
+  - provider__name: "GTT"
+    "!create_or_update:name": "GTT Provider Network"
+    "id": {{ 'GTT Provider Network' | deterministic_uuid('provider_networks') }}
+  - provider__name: "Liberty Global"
+    "!create_or_update:name": "LG Provider Network"
+    "id": {{ 'LG Provider Network' | deterministic_uuid('provider_networks') }}
+  - provider__name: "Lumen Technologies"
+    "!create_or_update:name": "Lumen Provider Network"
+    "id": {{ 'Lumen Provider Network' | deterministic_uuid('provider_networks') }}
+  - provider__name: "NTT"
+    "!create_or_update:name": "NTT Provider Network"
+    "id": {{ 'NTT Provider Network' | deterministic_uuid('provider_networks') }}
+  - provider__name: "Orange"
+    "!create_or_update:name": "Orange Provider Network"
+    "id": {{ 'Orange Provider Network' | deterministic_uuid('provider_networks') }}
+  - provider__name: "PCCW Global"
+    "!create_or_update:name": "PCCW Provider Network"
+    "id": {{ 'PCCW Provider Network' | deterministic_uuid('provider_networks') }}
+  - provider__name: "Sprint"
+    "!create_or_update:name": "Sprint Provider Network"
+    "id": {{ 'Sprint Provider Network' | deterministic_uuid('provider_networks') }}
+  - provider__name: "Tata Communications"
+    "!create_or_update:name": "TATA Provider Network"
+    "id": {{ 'TATA Provider Network' | deterministic_uuid('provider_networks') }}
+  - provider__name: "Telecom Italia"
+    "!create_or_update:name": "TI Provider Network"
+    "id": {{ 'TI Provider Network' | deterministic_uuid('provider_networks') }}
+  - provider__name: "Telia Carrier"
+    "!create_or_update:name": "Telia Provider Network"
+    "id": {{ 'Telia Provider Network' | deterministic_uuid('provider_networks') }}
+  - provider__name: "Telxius"
+    "!create_or_update:name": "Telxius Provider Network"
+    "id": {{ 'Telxius Provider Network' | deterministic_uuid('provider_networks') }}
+  - provider__name: "Verizon"
+    "!create_or_update:name": "Verizon Provider Network"
+    "id": {{ 'Verizon Provider Network' | deterministic_uuid('provider_networks') }}
+  - provider__name: "Zayo"
+    "!create_or_update:name": "Zayo Provider Network"
+    "id": {{ 'Zayo Provider Network' | deterministic_uuid('provider_networks') }}
+
+
+dynamic_groups:
+  - "!create_or_update:name": "AMER Branch Access"
+    content_type:
+      "!get:model": "device"
+      "!get:app_label": "dcim"
+    # TODO: Fix this filter to avoid post_implementation
+    # filter:
+    #   location:
+    #     - AMER
+    #   role:
+    #     - branch_access
+    "id": "{{ 'AMER Branch Access' | deterministic_uuid('dynamic_groups') }}"
+
+  - "!create_or_update:name": "EMEA Branch Access"
+    content_type:
+      "!get:model": "device"
+      "!get:app_label": "dcim"
+    # TODO: Fix this filter to avoid post_implementation
+    # filter:
+    #   location:
+    #     - EMEA
+    #   role:
+    #     - branch_access
+    "id": "{{ 'EMEA Branch Access' | deterministic_uuid('dynamic_groups') }}"
+
+  - "!create_or_update:name": "APAC Branch Access"
+    content_type:
+      "!get:model": "device"
+      "!get:app_label": "dcim"
+    # TODO: Fix this filter to avoid post_implementation
+    # filter:
+    #   location:
+    #     - APAC
+    #   role:
+    #     - branch_access
+    "id": "{{ 'APAC Branch Access' | deterministic_uuid('dynamic_groups') }}"
+
+## /Extensibility/
+# /Extensibility/Custom Relationships
+relationships:
+  - "!create_or_update:key": "device_to_vlan"
+    label: "Device to Vlan"
+    description: "Device to Vlan relationship"
+    type: "many-to-many"
+    source_type: { "!get:model": "device" }
+    destination_type: { "!get:model": "vlan" }
+    source_label: "VLANs configured on this device"
+    destination_label: "Devices using this VLAN"
+    "id": "{{ 'device_to_vlan' | deterministic_uuid('relationships') }}"
+
+
+## /Extensibility/
+# /Extensibility/Custom Fields
+custom_fields:
+  - "!create_or_update:key": "circuit_redundancy"
+    label: "Circuit Redundancy"
+    type: "select"
+    weight: 100
+    description: "Circuit Redundancy to understand the primary or secondary circuit"
+    content_types:
+      - "!get:app_label": "circuits"
+        "!get:model": "circuit"
+    "!ref": "circuit_redundancy"
+    "id": "{{ 'circuit_redundancy' | deterministic_uuid('custom_fields') }}"
+
+custom_field_choices:
+  - "!create_or_update:value": "primary"
+    custom_field: "!ref:circuit_redundancy"
+    weight: 100
+    "id": "{{ 'primary' | deterministic_uuid('custom_field_choices') }}"
+
+  - "!create_or_update:value": "secondary"
+    custom_field: "!ref:circuit_redundancy"
+    weight: 150
+    "id": "{{ 'secondary' | deterministic_uuid('custom_field_choices') }}"
+
+  - "!create_or_update:value": "failover"
+    custom_field: "!ref:circuit_redundancy"
+    weight: 200
+    "id": "{{ 'failover' | deterministic_uuid('custom_field_choices') }}"
+
+# /Extensibility/Custom Links, Computed Fields, Export Templates, & GraphQL Queries
+{% raw %}
+custom_links:
+  - "!create_or_update:name": "Peering DB"
+    weight: 100
+    "target_url": "https://www.peeringdb.com/asn/{{ obj.asn }}"
+    button_class: info
+    text: "{% if obj.asn|string == 'None' %}{% else %}Peering DB{% endif %}"
+    new_window: true
+    "content_type":
+      "!get:app_label": "circuits"
+      "!get:model": "provider"
+
+  - "!create_or_update:name": "Time Zone"
+    weight: 100
+    "target_url": "https://timeapi.io/api/time/current/coordinate?latitude={{ obj.latitude }}&longitude={{ obj.longitude }}"
+    button_class: info
+    text: "{% if obj.latitude|string == 'None' %}{% else %}Time Zone{% endif %}"
+    new_window: true
+    group_name: "Site Links"
+    "content_type":
+      "!get:app_label": "dcim"
+      "!get:model": "location"
+
+  - "!create_or_update:name": "Weather"
+    weight: 150
+    "target_url": "https://www.visualcrossing.com/weather-history/{{ obj.latitude }},{{ obj.longitude }}"
+    button_class: info
+    text: "{% if obj.latitude|string == 'None' %}{% else %}Weather{% endif %}"
+    new_window: true
+    group_name: "Site Links"
+    "content_type":
+      "!get:app_label": "dcim"
+      "!get:model": "location"
+
+export_templates:
+  - "!create_or_update:name": "Ascii Table"
+    template_code: |
+        | {{ "%-12s" | format("Device Name") }} | {{ "%-15s" | format("IP Address") }} | {{ "%-12s" | format("Device Type") }} |
+        | ============ | =============== | ============ |
+        {%- for device in queryset -%}
+        {%-     if device.status and device.primary_ip %}
+        | {{ "%-12s" | format(device.name) }} | {{ "%-15s" | format(device.primary_ip.address.ip) }} | {{ "%-12s" | format(device.device_type) }} |
+        {%-     endif -%}
+        {%- endfor -%}
+    "content_type":
+      "!get:app_label": "dcim"
+      "!get:model": "device"
+
+computed_fields:
+  - "!create_or_update:label": "NTC Description"
+    description: "Add information on connected device/circuit"
+    fallback_value: "Unable to generate the NTC description"
+    template: "{{ obj | ntc_description }}"
+    "content_type":
+      "!get:app_label": "dcim"
+      "!get:model": "interface"
+
+  - "!create_or_update:label": "PTR Record"
+    description: "Calculate the PTR record for a given IP address"
+    fallback_value: "Unable to generate the PTR record"
+    template: "{{ obj.address.ip | ipaddress_address('reverse_pointer') }}"
+    "content_type":
+      "!get:app_label": "ipam"
+      "!get:model": "ipaddress"
+
+  - "!create_or_update:label": "Ansible Network OS"
+    description: "Generate the ansible_network_os field for use in Ansible"
+    fallback_value: "not defined"
+    template: |
+      {% if obj.slug == 'arista_eos' %}
+      arista.eos.eos
+      {% elif obj.slug == 'cisco_asa' %}
+      cisco.asa.asa
+      {% elif obj.slug == 'cisco_ios' %}
+      cisco.ios.ios
+      {% elif obj.slug == 'cisco_xr' %}
+      cisco.iosxr.iosxr
+      {% elif obj.slug == 'cisco_xe' %}
+      cisco.ios.ios
+      {% elif obj.slug == 'cisco_nxos' %}
+      cisco.nxos.nxos
+      {% elif obj.slug == 'juniper_junos' %}
+      junipernetworks.junos.junos
+      {% else %}
+      {% endif %}
+    "content_type":
+      "!get:app_label": "dcim"
+      "!get:model": "platform"
+{% endraw %}
+
+graphql_queries:
+{% include "design_files/templates/_shared_includes/010_graphql_query_device_info.j2" %}
+
+
+{% for region_name in ["AMER", "APAC", "EMEA"] %}
+  - "!create_or_update:name": "Branches of {{ region_name }} Net Eng"
+    query: |
+      query {
+        locations(tenant: "{{ region_name }} Net Eng") {
+          name
+          facility
+          vlans {
+            name
+            rel_device_to_vlan {
+              name
+            }
+          }
+        }
+      }
+{% endfor %}
+
+### Branch data validation rules
+# TODO(mzb): move data validations under nautobot_elements
+# This enables conditional design rendering, only if data_validation is installed & enabled.
+
+{% if "nautobot_data_validation_engine" in INSTALLED_PLUGINS %}
+regular_expression_validation_rules:
+  - "!create_or_update:name": "Device Type Part Number"
+    "content_type":
+      "!get:app_label": "dcim"
+      "!get:model": "devicetype"
+    "field": "part_number"
+    "regular_expression": >-
+      ^[a-zA-Z0-9_-]+$
+    "enabled": True
+    "error_message": "A device type may only contain alpha numeric, dashes, and underscore characters."
+    "id": "{{ 'Device Type Part Number' | deterministic_uuid('regular_expression_validation_rules') }}"
+
+  - "!create_or_update:name": "Device Type Part Model"
+    "content_type":
+      "!get:app_label": "dcim"
+      "!get:model": "devicetype"
+    "field": "model"
+    "regular_expression": >-
+      ^[a-zA-Z0-9_-]+$
+    "enabled": True
+    "error_message": "A device type may only contain alpha numeric, dashes, and underscore characters."
+    "id": "{{ 'Device Type Part Model' | deterministic_uuid('regular_expression_validation_rules') }}"
+
+min_max_validation_rules:
+  - "!create_or_update:name": "Max VLAN ID"
+    "content_type":
+      "!get:app_label": "ipam"
+      "!get:model": "vlan"
+    "field": "vid"
+    "max": 3999.0
+    "enabled": False
+    "id": "{{ 'Max VLAN ID' | deterministic_uuid('min_max_validation_rules') }}"
+#    "min": None
+#    "error_message": ""
+{% endif %}

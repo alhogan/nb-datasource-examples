@@ -1,3 +1,49 @@
 ---
+# Globals
+global_branch_container: "10.32.0.0/11"  # Scales up to 256 branches, each of /19.
+global_branch_container_role_name: "global_branch"
 
-jeff_example: "jeff-kala"
+# Branch (site) specific
+branch_container_role_name: "branch"  # role & slug name for branch specific container prefix (per site)
+
+## VLANs
+# Device Roles
+branch_distribution_role: "branch_distribution"  # role & slug
+branch_access_role: "branch_access"  # role & slug
+branch_data_role: "branch_data"  # role & slug
+
+# VLAN Roles
+branch_data_vlan_role_name: "branch_data"  # role & slug
+branch_voice_vlan_role_name: "branch_voice"  # role & slug
+
+# VLAN Ranges  # These are the first two digits of the VLANs that will be created for each branch
+data_vlan_hundred:
+  AMER: 15
+  EMEA: 25
+  APAC: 35
+voice_vlan_hundred:
+  AMER: 16
+  EMEA: 26
+  APAC: 36
+
+# Providers
+branch_provider:
+  AMER:
+    primary: AT&T
+    backup: Verizon
+  EMEA:
+    primary: Colt
+    backup: British Telecom
+  APAC:
+    primary: PCCW Global
+    backup: Tata Communications
+
+## Prefixes
+# Default per branch
+branch_prefixlen: 19  # New branch prefix size
+
+# Prefix size
+# data and voice prefix len is statically defined in the `branch_context.py`
+
+# Defaults
+branch_device_status: "Active"

@@ -1,0 +1,71 @@
+---
+device_profiles:
+  backbone_mx10004:
+    model: "MX10004"
+    interfaces:
+      - name: "et-2/[1-6]/[1-4]"
+        type: "100gbase-x-qsfp28"
+
+  branch_isr4451:
+    model: "ISR4451-X"
+    interfaces:
+      infra_a:
+        - name: "GigabitEthernet0/0/0"
+          type: "1000base-t"
+      infra_b:
+        - name: "GigabitEthernet0/0/1"
+          type: "1000base-t"
+      wan:
+        - name: "GigabitEthernet0/0/2"
+          type: "1000base-t"
+      vrrp:
+        - name: "GigabitEthernet0/0/3"
+          type: "1000base-t"
+      infra_a_svi:
+        - name: "GigabitEthernet0/0/0.201" # TODO(mzb): add parent.
+          type: "virtual"
+      infra_b_svi:
+        - name: "GigabitEthernet0/0/1.201"
+          type: "virtual"
+      unused:
+        - name: "GigabitEthernet0"
+          type: "1000base-t"
+        - name: "GigabitEthernet0/1/[0-1]"
+          type: "1000base-t"
+
+  branch_c9500_16x:
+    model: "C9500-16X"
+    interfaces:
+      infra_a:
+        - name: "TenGigabitEthernet1/0/[1-5]"
+          type: "10gbase-x-sfpp"
+      infra_b:
+        - name: "TenGigabitEthernet2/0/[1-5]"
+          type: "10gbase-x-sfpp"
+      # Access switches - Downlinks to the Access Layer
+      access_a:
+        - name: "TenGigabitEthernet1/0/[6-16]"
+          type: "10gbase-x-sfpp"
+      access_b:
+        - name: "TenGigabitEthernet2/0/[6-16]"
+          type: "10gbase-x-sfpp"
+
+  branch_c9300_48t:
+    model: "C9300"
+    interfaces:
+      infra_a:
+        - name: "TenGigabitEthernet1/1/1"
+          type: "10gbase-x-sfpp"
+      infra_b:
+        - name: "TenGigabitEthernet1/1/2"
+          type: "10gbase-x-sfpp"
+      # Access switches - Downlinks to the Access Layer
+      access:
+        - name: "GigabitEthernet[1-44]"
+          type: "other"
+# The MX10K-LC9600 (Model number: JNP10K-LC9600) is a
+# fixed-configuration 24-port line card that provides a line-rate throughput of 9.6 Tbps. The line card has twenty-four QSFP ports, each capable of supporting a maximum speed of 400 Gbps.
+#
+# https://community.juniper.net/blogs/deepaktr/2022/06/29/mx10000-lc9600-deepdive
+# 2nd line card, 6 PICs, each port on each PIC
+# 100gb interfaces: 2/[1-6]/[1-4]

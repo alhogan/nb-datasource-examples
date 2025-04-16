@@ -1,0 +1,1068 @@
+---
+
+# Tenants
+tenants:
+  - "!get:name": "{{ region_name }} Net Eng"
+    "!ref": "tenant_branch"
+
+# Manufacturers
+manufacturers:
+  - "!create_or_update:name": "Cisco"
+    description: "Cisco Systems, Inc."
+    "!ref": "manufacturer_cisco"
+    "id": "{{ 'Cisco' | deterministic_uuid('manufacturers') }}"
+  - "!create_or_update:name": "APC"
+    description: "APC Schneider Electric"
+    "!ref": "manufacturer_apc"
+    "id": "{{ 'APC' | deterministic_uuid('manufacturers') }}"
+
+# Platforms
+platforms:
+  - "!create_or_update:name": "Cisco IOS"
+    description: "Cisco IOS"
+    napalm_driver: "ios"
+    "network_driver": "cisco_ios"
+    "manufacturer": "!ref:manufacturer_cisco"
+    "!ref": "platform_cisco_ios"
+    "id": "{{ 'Cisco IOS' | deterministic_uuid('platforms') }}"
+
+# Dynamic Groups
+dynamic_groups:
+  - "!create_or_update:name": "Branch Devices"
+    "description": "Branch Devices"
+    content_type:
+      "!get:model": "device"
+      "!get:app_label": "dcim"
+    "id": "{{ 'Branch Devices' | deterministic_uuid('dynamic_groups') }}"
+
+### Roles
+roles:
+##### DCIM specific roles
+  - "!get:name": "branch_wan"
+    "!ref": "branch_wan_role"
+
+  - "!get:name": "{{ branch_distribution_role }}"
+    "!ref": "branch_distribution_role"
+
+  - "!get:name": "{{ branch_access_role }}"
+    "!ref": "branch_access_role"
+
+  - "!create_or_update:name": "branch_ap"
+    "!ref": "branch_ap"
+    "id": "{{ 'branch_ap' | deterministic_uuid('roles') }}"
+
+  - "!create_or_update:name": "branch_pdu"
+    color: "ff41f5"
+    content_types:
+      - { "!get:model": "device" }
+    "!ref": "branch_pdu"
+    "id": "{{ 'branch_pdu' | deterministic_uuid('roles') }}"
+
+##### IPAM specific roles
+  - "!get:name": "{{ branch_container_role_name }}"
+    "!ref": "branch_container"
+
+  - "!get:name": "branch_infrastructure"
+    "!ref": "branch_infrastructure"
+
+  - "!get:name": "branch_loopback"
+    "!ref": "branch_loopback"
+
+  - "!get:name": "branch_data"
+    "!ref": "branch_data"
+
+  - "!get:name": "branch_voice"
+    "!ref": "branch_voice"
+
+  - "!get:name": "branch_vrrp"
+    "!ref": "branch_vrrp"
+
+
+# Device Families
+device_families:
+  - "!create_or_update:name": "Cisco Catalyst"
+    "!ref": "catalyst_switches"
+    "id": "{{ 'Cisco Catalyst' | deterministic_uuid('device_families') }}"
+
+  - "!create_or_update:name": "Cisco ISR"
+    "!ref": "isr_routers"
+    "id": "{{ 'Cisco ISR' | deterministic_uuid('device_families') }}"
+
+  - "!create_or_update:name": "SD-WAN"
+    "!ref": "sdwan"
+    "id": "{{ 'SD-WAN' | deterministic_uuid('device_families') }}"
+
+
+# Device Types
+device_types:
+  - manufacturer: "!ref:manufacturer_cisco"
+    "!create_or_update:model": "{{ device_profiles['branch_isr4451']['model'] }}"
+    part_number: "{{ device_profiles['branch_isr4451']['model'] }}"
+    u_height: 1
+    is_full_depth: true
+    device_family: "!ref:isr_routers"
+    "!ref": "isr4451_devicetype"
+    "id": "{{ device_profiles['branch_isr4451']['model'] | deterministic_uuid('device_types') }}"
+
+  - manufacturer: "!ref:manufacturer_cisco"
+    "!create_or_update:model": "{{ device_profiles['branch_c9500_16x']['model'] }}"
+    part_number: "{{ device_profiles['branch_c9500_16x']['model'] }}"
+    u_height: 1
+    is_full_depth: true
+    device_family: "!ref:catalyst_switches"
+    "!ref": "c9500_16x_devicetype"
+    "id": "{{ device_profiles['branch_c9500_16x']['model'] | deterministic_uuid('device_types') }}"
+
+  - manufacturer: "!ref:manufacturer_cisco"
+    "!create_or_update:model": "{{ device_profiles['branch_c9300_48t']['model'] }}"
+    part_number: "{{ device_profiles['branch_c9300_48t']['model'] }}"
+    u_height: 1
+    is_full_depth: true
+    device_family: "!ref:catalyst_switches"
+    "!ref": "c9300_devicetype"
+    "id": "{{ device_profiles['branch_c9300_48t']['model'] | deterministic_uuid('device_types') }}"
+
+  - "!create_or_update:model": "C1111-8P"
+    part_number: C1111-8P
+    manufacturer: "!ref:manufacturer_cisco"
+    device_family: "!ref:sdwan"
+    u_height: 1
+    is_full_depth: False
+    "!ref": "c1111-8p"
+    "id": "{{ 'C1111-8P' | deterministic_uuid('device_types') }}"
+
+  - "!create_or_update:model": "AP-750-CVR-20"
+    part_number: AP-750-CVR-20
+    manufacturer__name: "HPE Aruba"
+    "!ref": "aruba_750"
+    "id": "{{ 'AP-750-CVR-20' | deterministic_uuid('device_types') }}"
+
+  - "!create_or_update:model": "APC-APDU9941"
+    part_number: APC-APDU9941
+    manufacturer: "!ref:manufacturer_apc"
+    "!ref": "APC-APDU9941"
+    "id": "{{ 'APC-APDU9941' | deterministic_uuid('device_types') }}"
+
+
+module_types:
+  - "!create_or_update:model": "C9300-NM-8X="
+    part_number: "C9300-NM-8X="
+    manufacturer: "!ref:manufacturer_cisco"
+    "id": "{{ 'C9300-NM-8X=' | deterministic_uuid('module_types') }}"
+
+# Software Versions
+software_versions:
+  - "platform": "!ref:platform_cisco_ios"
+    "!create_or_update:version": "17.12.3"
+    alias: "IOS - Dublin"
+    release_date: "2024-03-21"
+    end_of_support_date: "2026-03-21"
+    documentation_url: "https://www.cisco.com/c/en/us/td/docs/routers/access/4400/release/xe-17-12/isr4k-rel-notes-xe-17-12.html"
+    status__name: "Active"
+    "!ref": "software_dublin"
+    "id": "{{ '17.12.3' | deterministic_uuid('software_versions') }}"
+    software_image_files:
+      - "!create_or_update:image_file_name": "isr4400-universalk9.17.12.03.SPA.bin"
+        status__name: "Active"
+        "id": "{{ 'isr4400-universalk9.17.12.03.SPA.bin' | deterministic_uuid('software_image_files') }}"
+        device_types:
+          - "!ref:isr4451_devicetype"
+
+  - "platform": "!ref:platform_cisco_ios"
+    "!create_or_update:version": "17.9.5a"
+    alias: "IOS - Cupertino"
+    release_date: "2024-02-28"
+    end_of_support_date: "2026-02-28"
+    documentation_url: "https://www.cisco.com/c/en/us/td/docs/routers/access/4400/release/xe-17-9/isr4k-rel-notes-xe-17-9.html"
+    status__name: "Active"
+    "!ref": "software_cupertino"
+    "id": "{{ '17.9.5a' | deterministic_uuid('software_versions') }}"
+    software_image_files:
+      - "!create_or_update:image_file_name": "isr4400-universalk9.17.09.05.SPA.bin"
+        status__name: "Active"
+        "id": "{{ 'isr4400-universalk9.17.09.05.SPA.bin' | deterministic_uuid('software_image_files') }}"
+        device_types:
+          - "!ref:c9500_16x_devicetype"
+          - "!ref:c9300_devicetype"
+
+#content_types:
+#  - "!get:model": "device"
+#    "!ref": "dev_ct"
+
+location_types:
+  - "!get:name": "Sub Region"
+    "!ref": "country_loc_type"
+
+  - "!get:name": "Branch"
+    "!ref": "site_loc_type"
+
+#  - "!get:name": "server-room"
+#    "!ref": "sr_loc_type"
+
+locations:
+# SUB REGION/
+  - "!create_or_update:name": "{{ country_name }}"
+    location_type: "!ref:country_loc_type"
+    parent__name: "{{ region_name }}"
+    status__name: "Active"
+    "id": "{{ country_name | deterministic_uuid('locations') }}"
+
+# BRANCH/
+  - "!create_or_update:name": "{{ site_name }}"
+    location_type: "!ref:site_loc_type"
+    facility: "{{ site_facility }}"
+    parent__name: "{{ country_name }}"
+    status__name: "{{ status }}"
+    latitude: "{{ site_latitude }}"
+    longitude: "{{ site_longitude }}"
+    physical_address: "{{ physical_address }}"
+    "tenant": "!ref:tenant_branch"
+    "!ref": "branch_location"
+    "id": "{{ site_name | deterministic_uuid('locations') }}"
+
+## SERVER ROOM/
+#  - "!create_or_update:name": "{{ site_name | lower }}-server-room"
+#    location_type: "!ref:sr_loc_type"
+#    parent__name: "{{ site_name }}"
+#    status__name: "{{ status }}"
+#    "tenant": "!ref:tenant_branch"
+#    "!ref": "server_room_location"
+#    "id": "{{ (site_name ~ '-server-room') | deterministic_uuid('locations') }}"
+
+# Vlan Groups
+vlan_groups:
+  - "!create_or_update:name":  "{{ site_name }} - branch"
+    location: "!ref:branch_location"
+    "id": "{{ (site_name ~ '- branch') | deterministic_uuid('vlan_groups') }}"
+
+# Racks
+racks:
+  - location: "!ref:branch_location"
+    width: 19
+    u_height: 42
+    name: "{{ site_name }} SRR"
+    comments: "{{ site_name }} Server Room Rack"
+    status__name: "{{ status }}"
+    "tenant": "!ref:tenant_branch"
+    "!ref": "server_room_rack"
+    "id": "{{ (site_name ~ ' server room rack') | deterministic_uuid('racks') }}"
+
+  - location: "!ref:branch_location"
+    width: 19
+    u_height: 42
+    name: "{{ site_name }} SRRB"
+    comments: "{{ site_name }} Server Room Rack Backup"
+    status__name: "{{ status }}"
+    "tenant": "!ref:tenant_branch"
+    "!ref": "server_room_rack_backup"
+    "id": "{{ (site_name ~ ' server room rack (backup)') | deterministic_uuid('racks') }}"
+
+# Power
+power_panels:
+  - name: "{{ site_name }} Power Panel A"
+    location: "!ref:branch_location"
+    "!ref": "power_panel_a"
+  - name: "{{ site_name }} Power Panel B"
+    location: "!ref:branch_location"
+    "!ref": "power_panel_b"
+
+
+power_feeds:
+  - name: "{{ site_name | lower }}-pdu-01"
+    power_panel: "!ref:power_panel_a"
+    rack: "!ref:server_room_rack"
+    status__name: "{{ status }}"
+    type: "primary"
+    supply: "ac"
+    voltage: 400
+    amperage: 30
+    phase: "single-phase"
+    max_utilization: 80
+    "!ref": "power_feed_{{ site_name | lower }}-pdu-01"
+
+  - name: "{{ site_name | lower }}-pdu-02"
+    power_panel: "!ref:power_panel_b"
+    rack: "!ref:server_room_rack_backup"
+    status__name: "{{ status }}"
+    type: "redundant"
+    supply: "ac"
+    voltage: 400
+    amperage: 30
+    phase: "single-phase"
+    max_utilization: 80
+    "!ref": "power_feed_{{ site_name | lower }}-pdu-02"
+
+device_redundancy_groups:
+  - "!create_or_update:name": "{{ site_name | upper }} Branch Routers"
+    status__name: "Active"
+    "failover_strategy": "active-passive"
+    "!ref": "branch_routers_redundancy_group"
+    "id": "{{ (site_name ~ ' Branch Routers') | deterministic_uuid('device_redundancy_groups') }}"
+
+interface_redundancy_groups:
+  - "!create_or_update:name": "{{ site_name | upper }} Branch VRRP"
+    "description": "{{ site_name | upper }}'s VRRP interface group"
+    status__name: "Active"
+    "protocol": "vrrp"
+    "protocol_group_id": "110"
+    "!ref": "branch_routers_vrrp"
+    "id": "{{ (site_name ~ ' Branch VRRP') | deterministic_uuid('interface_redundancy_groups') }}"
+
+#### IPAM data
+prefixes:
+  # Branch specific prefix (IP allocation)
+  - "!create_or_update:prefix": "{{ branch_prefix }}"
+    "namespace__name": "branch"
+    status__name: "Active"
+    role: "!ref:branch_container"
+    description: "Branch prefix for {{ site_name }}"
+    "location_assignments":
+      - "!create_or_update:location": "!ref:branch_location"
+    "tenant": "!ref:tenant_branch"
+    "!ref": "branch_prefix"
+    "id": "{{ branch_prefix | deterministic_uuid('prefixes') }}"
+
+  # Loopback Prefix
+  - "!create_or_update:prefix": "{{ branch_prefix | network_offset('0.0.0.0/27') }}"
+    "namespace__name": "branch"
+    status__name: Active
+    role: "!ref:branch_loopback"
+    description: "Loopback prefix for {{ site_name }}"
+    "location_assignments":
+      - "!create_or_update:location": "!ref:branch_location"
+    "tenant": "!ref:tenant_branch"
+    "!ref": "loopback_prefix"
+    "id": "{{ (branch_prefix | network_offset('0.0.0.0/27')) | deterministic_uuid('prefixes') }}"
+
+  # Branch VRRP
+  {% set vrrp_prefix = branch_prefix | network_offset('0.0.0.32/28') %}
+  - "!create_or_update:prefix": "{{ vrrp_prefix }}"
+    "namespace__name": "branch"
+    status__name: Active
+    role: "!ref:branch_vrrp"
+    description: "VRRP prefix for {{ site_name }}"
+    "location_assignments":
+      - "!create_or_update:location": "!ref:branch_location"
+    "tenant": "!ref:tenant_branch"
+    "!ref": "vrrp_prefix"
+    "id": "{{ (branch_prefix | network_offset('0.0.0.32/28')) | deterministic_uuid('prefixes') }}"
+
+
+  # Branch Infrastructure Prefix
+  - "!create_or_update:prefix": "{{ branch_prefix | network_offset('0.0.1.0/24') }}"
+    "namespace__name": "branch"
+    status__name: Active
+    role: "!ref:branch_infrastructure"
+    description: "Infrastructure prefix for {{ site_name }}"
+    "location_assignments":
+      - "!create_or_update:location": "!ref:branch_location"
+    "tenant": "!ref:tenant_branch"
+    "!ref": "branch_infrastructure_prefix"
+    "id": "{{ (branch_prefix | network_offset('0.0.1.0/24')) | deterministic_uuid('prefixes') }}"
+
+
+"ip_addresses":
+  - "!create_or_update:address": "{{ vrrp_prefix | network_offset('0.0.0.1/32') }}"
+    "parent": "!ref:vrrp_prefix"
+    status__name: Active
+    "role": "!ref:branch_vrrp"
+    "tenant": "!ref:tenant_branch"
+    "dns_name": "{{ site_name | lower }}-vrrp.acme.net"
+    "interface_redundancy_groups":
+      - "!ref:branch_routers_vrrp"
+    "id": "{{ (vrrp_prefix | network_offset('0.0.0.1/32') ) | deterministic_uuid('ip_addresses') }}"
+
+# TODO: Optimize this, was getting error: `AttributeError: 'NoneType' object has no attribute '_state'`
+# when nested under the distribution switch
+# Once https://github.com/nautobot/nautobot-app-design-builder/pull/217 is addressed, this can be fixed
+{% set distribution_switch_name = site_name | lower ~ '-dsw-01' %}
+"virtual_chassis":
+  "!create_or_update:name": "{{ distribution_switch_name }}"
+  "domain": "{{ site_name | upper }} VC"
+  # "master": "!ref:dsw_switch_1"
+  # "!ref": "dsw_switch_vc"
+
+
+devices:
+  # WAN router #1
+  {% set primary_router_name = site_name | lower ~ '-rt-01' %}
+  - "!create_or_update:name": "{{ primary_router_name }}"
+    serial: "{{ "Cisco" | generate_serial(primary_router_name) }}"
+    status__name: "{{ status }}"
+    device_type: "!ref:isr4451_devicetype"
+    "device_redundancy_group": "!ref:branch_routers_redundancy_group"
+    "device_redundancy_group_priority": 100
+    role: "!ref:branch_wan_role"
+    location: "!ref:branch_location"
+    "tenant": "!ref:tenant_branch"
+    "platform": "!ref:platform_cisco_ios"
+    "rack": "!ref:server_room_rack"
+    "position": 40
+    "face": "front"
+    "software_version": "!ref:software_dublin"
+    "!ref": "primary_router_device"
+    "id": "{{ primary_router_name | deterministic_uuid('devices') }}"
+    interfaces:
+      - "!create_or_update:name": "Loopback1"
+        "!ref": "primary_router_device_lo1"
+        "type": "virtual"
+        "status__name": "{{ status }}"
+        "id": "{{ (primary_router_name ~ '-Loopback1') | deterministic_uuid('interfaces') }}"
+        ip_address_assignments:
+          # TODO: Fix the assignement validation
+          - ip_address:
+              "!create_or_update:address": "{{ branch_prefix | network_offset('0.0.0.1/32') }}"
+              "!create_or_update:parent": "!ref:loopback_prefix"
+              "status__name": "Active"
+              "tenant": "!ref:tenant_branch"
+              "dns_name": "{{ primary_router_name }}.acme.net"
+              "role": "!ref:branch_loopback"
+              "!ref": "primary_router_loopback"
+              "id": "{{ (branch_prefix | network_offset('0.0.0.1/32')) | deterministic_uuid('ip_addresses') }}"
+
+#        "ip_addresses":
+#          - "!create_or_update:address": "{{ branch_prefix | network_offset('0.0.0.1/32') }}"
+#            "parent": "!ref:loopback_prefix"
+#            "status__name": "Active"
+#            "role": "!ref:branch_loopback"
+#            "tenant": "!ref:tenant_branch"
+#            "dns_name": "{{ primary_router_name }}.acme.net"
+    {% for interface_block in device_profiles['branch_isr4451']['interfaces']['infra_a'] %}
+      {% for name in interface_block.name | interface_range_expansion %}
+      - "!create_or_update:name": {{ name }}
+        "!ref": "{{ primary_router_name }}:{{ name }}"
+        type: {{ interface_block.type }}
+        status__name: "{{ status }}"
+        role: "!ref:branch_distribution_role"
+        "id": "{{ (primary_router_name ~ '-' ~ name) | deterministic_uuid('interfaces') }}"
+      {% endfor %}
+    {% endfor %}
+    {% for interface_block in device_profiles['branch_isr4451']['interfaces']['infra_b'] %}
+      {% for name in interface_block.name | interface_range_expansion %}
+      - "!create_or_update:name": {{ name }}
+        "!ref": "{{ primary_router_name }}:{{ name }}"
+        type: {{ interface_block.type }}
+        role: "!ref:branch_distribution_role"
+        status__name: "{{ status }}"
+        "id": "{{ (primary_router_name ~ '-' ~ name) | deterministic_uuid('interfaces') }}"
+      {% endfor %}
+    {% endfor %}
+    {% for interface_block in device_profiles['branch_isr4451']['interfaces']['wan'] %}
+      {% for name in interface_block.name | interface_range_expansion %}
+      - "!create_or_update:name": {{ name }}
+        "!ref": "{{ primary_router_name }}:wan"
+        type: {{ interface_block.type }}
+        role: "!ref:branch_wan_role"
+        status__name: "{{ status }}"
+        "id": "{{ (primary_router_name ~ '-' ~ name) | deterministic_uuid('interfaces') }}"
+      {% endfor %}
+    {% endfor %}
+    {% for interface_block in device_profiles['branch_isr4451']['interfaces']['vrrp'] %}
+      {% for name in interface_block.name | interface_range_expansion %}
+      - "!create_or_update:name": {{ name }}
+        "!ref": "{{ primary_router_name }}:vrrp"
+        type: {{ interface_block.type }}
+        status__name: "{{ status }}"
+        "id": "{{ (primary_router_name ~ '-' ~ name) | deterministic_uuid('interfaces') }}"
+        interface_redundancy_group_associations:
+          - "!create_or_update:interface_redundancy_group": "!ref:branch_routers_vrrp"
+            "priority": 200
+      {% endfor %}
+    {% endfor %}
+    "inventory_items":
+      - "!create_or_update:name": "4-port FXO NIM"
+        "part_id": "NIM-4FXO"
+        "manufacturer": "!ref:manufacturer_cisco"
+        "serial": "91IUA90NQ"
+        "asset_tag": "rt01-{{ site_name | lower }}-NIM-91IUA90NQ"
+        "discovered": False
+
+      - "!create_or_update:name": "10GBASE-SR SFP Module"
+        "part_id": "SFP-10G-SR"
+        "manufacturer": "!ref:manufacturer_cisco"
+        "!create_or_update:serial": "90KAK991NA"
+        "asset_tag": "rt01-{{ site_name | lower }}-SFP-90KAK991NA"
+        "discovered": True
+
+      - "!create_or_update:name": "10GBASE-SR SFP Module"
+        "part_id": "SFP-10G-SR"
+        "manufacturer": "!ref:manufacturer_cisco"
+        "!create_or_update:serial": "9181KQOAK28"
+        "asset_tag": "rt01-{{ site_name | lower }}-SFP-9181KQOAK28"
+        "discovered": True
+
+      - "!create_or_update:name": "10GBASE-SR SFP Module"
+        "part_id": "SFP-10G-SR"
+        "manufacturer": "!ref:manufacturer_cisco"
+        "!create_or_update:serial": "6171719191"
+        "asset_tag": "rt01-{{ site_name | lower }}-SFP-6171719191"
+        "discovered": True
+
+      - "!create_or_update:name": "NIM Carrier Card for up to 2 SSD Drives"
+        "part_id": "NIM-SSD"
+        "manufacturer": "!ref:manufacturer_cisco"
+        "serial": "811823123"
+        "asset_tag": "rt01-{{ site_name | lower }}-SSD-811823123"
+        "discovered": False
+    console_ports:
+      - "!create_or_update:name": "con0"
+        "label": "rt01-con0"
+        "description": "Console Port"
+        "type": "rj-45"
+    power_ports:
+      - "!create_or_update:name": "PWR-4450-AC"
+        "description": "Primary power supply"
+        "type": "iec-60320-c16"
+        "maximum_draw": 450
+        "allocated_draw": 400
+        "!ref": "{{ primary_router_name }}:pwr-1"
+      - "!create_or_update:name": "PWR-4450-AC/2"
+        "description": "Secondary power supply"
+        "type": "iec-60320-c16"
+        "maximum_draw": 450
+        "allocated_draw": 400
+        "!ref": "{{ primary_router_name }}:pwr-2"
+    "primary_ip4": { "!get:address": "{{ branch_prefix | network_offset('0.0.0.1/32') }}", "deferred": true }
+
+  # WAN router #2
+  {% set secondary_router_name = site_name | lower ~ '-rt-02' %}
+  - "!create_or_update:name": "{{ secondary_router_name }}"
+    serial: "{{ "Cisco" | generate_serial(secondary_router_name) }}"
+    status__name: "{{ status }}"
+    device_type: "!ref:isr4451_devicetype"
+    "device_redundancy_group": "!ref:branch_routers_redundancy_group"
+    "device_redundancy_group_priority": 110
+    role: "!ref:branch_wan_role"
+    location: "!ref:branch_location"
+    "tenant": "!ref:tenant_branch"
+    "platform": "!ref:platform_cisco_ios"
+    "rack": "!ref:server_room_rack"
+    "position": 38
+    "face": "front"
+    "software_version": "!ref:software_dublin"
+    "!ref": "secondary_router_device"
+    "id": "{{ secondary_router_name | deterministic_uuid('devices') }}"
+    interfaces:
+      - "!create_or_update:name": "Loopback1"
+        "!ref": "secondary_router_device_lo1"
+        type: "virtual"
+        status__name: "{{ status }}"
+        "id": "{{ (secondary_router_name ~ '-Loopback1') | deterministic_uuid('interfaces') }}"
+        ip_address_assignments:
+          - ip_address:
+              "!create_or_update:address": "{{ branch_prefix | network_offset('0.0.0.2/32') }}"
+              "!create_or_update:parent": "!ref:loopback_prefix"
+              "status__name": "Active"
+              "tenant": "!ref:tenant_branch"
+              "dns_name": "{{ secondary_router_name }}.acme.net"
+              "role": "!ref:branch_loopback"
+              "id": "{{ (branch_prefix | network_offset('0.0.0.2/32')) | deterministic_uuid('ip_addresses') }}"
+
+#        ip_addresses:
+#          - "address": "{{ branch_prefix | network_offset('0.0.0.2/32') }}"
+#            "parent": "!ref:branch_prefix"
+#            status__name: Active
+#            "role": "!ref:branch_loopback"
+#            "tenant": "!ref:tenant_branch"
+#            "dns_name": "{{ secondary_router_name }}.acme.net"
+#            "!ref": "rt02primaryip"
+    {% for interface_block in device_profiles['branch_isr4451']['interfaces']['infra_a'] %}
+      {% for name in interface_block.name | interface_range_expansion %}
+      - "!create_or_update:name": {{ name }}
+        type: {{ interface_block.type }}
+        role: "!ref:branch_distribution_role"
+        status__name: "{{ status }}"
+        "!ref": "{{ secondary_router_name }}:{{ name }}"
+        "id": "{{ (secondary_router_name ~ '-' ~ name) | deterministic_uuid('interfaces') }}"
+      {% endfor %}
+    {% endfor %}
+    {% for interface_block in device_profiles['branch_isr4451']['interfaces']['infra_b'] %}
+      {% for name in interface_block.name | interface_range_expansion %}
+      - "!create_or_update:name": {{ name }}
+        type: {{ interface_block.type }}
+        role: "!ref:branch_distribution_role"
+        status__name: "{{ status }}"
+        "!ref": "{{ secondary_router_name }}:{{ name }}"
+      {% endfor %}
+    {% endfor %}
+    {% for interface_block in device_profiles['branch_isr4451']['interfaces']['wan'] %}
+      {% for name in interface_block.name | interface_range_expansion %}
+      - "!create_or_update:name": {{ name }}
+        type: {{ interface_block.type }}
+        role: "!ref:branch_wan_role"
+        status__name: "{{ status }}"
+        "!ref": "{{ secondary_router_name }}:wan"
+      {% endfor %}
+    {% endfor %}
+    {% for interface_block in device_profiles['branch_isr4451']['interfaces']['vrrp'] %}
+      {% for name in interface_block.name | interface_range_expansion %}
+      - "!create_or_update:name": {{ name }}
+        type: {{ interface_block.type }}
+        status__name: "{{ status }}"
+        "!ref": "{{ primary_router_name }}:vrrp"
+        interface_redundancy_group_associations:
+          - "!create_or_update:interface_redundancy_group": "!ref:branch_routers_vrrp"
+            "priority": 100
+      {% endfor %}
+    {% endfor %}
+    "inventory_items":
+      - "!create_or_update:name": "4-port FXO NIM"
+        "part_id": "NIM-4FXO"
+        "manufacturer": "!ref:manufacturer_cisco"
+        "serial": "91IUA90NQ"
+        "asset_tag": "rt02-{{ site_name | lower }}-NIM-91IUA90NQ"
+        "discovered": False
+
+      - "!create_or_update:name": "10GBASE-SR SFP Module"
+        "part_id": "SFP-10G-SR"
+        "manufacturer": "!ref:manufacturer_cisco"
+        "!create_or_update:serial": "90KAK991NA"
+        "asset_tag": "rt02-{{ site_name | lower }}-SFP-90KAK991NA"
+        "discovered": True
+
+      - "!create_or_update:name": "10GBASE-SR SFP Module"
+        "part_id": "SFP-10G-SR"
+        "manufacturer": "!ref:manufacturer_cisco"
+        "!create_or_update:serial": "9181KQOAK28"
+        "asset_tag": "rt02-{{ site_name | lower }}-SFP-9181KQOAK28"
+        "discovered": True
+
+      - "!create_or_update:name": "10GBASE-SR SFP Module"
+        "part_id": "SFP-10G-SR"
+        "manufacturer": "!ref:manufacturer_cisco"
+        "!create_or_update:serial": "6171719191"
+        "asset_tag": "rt02-{{ site_name | lower }}-SFP-6171719191"
+        "discovered": True
+
+      - "!create_or_update:name": "NIM Carrier Card for up to 2 SSD Drives"
+        "part_id": "NIM-SSD"
+        "manufacturer": "!ref:manufacturer_cisco"
+        "serial": "811823123"
+        "asset_tag": "rt02-{{ site_name | lower }}-SSD-811823123"
+        "discovered": False
+    console_ports:
+      - "!create_or_update:name": "con0"
+        "description": "Console Port"
+        "label": "rt02-con0"
+        "type": "rj-45"
+    power_ports:
+      - "!create_or_update:name": "PWR-4450-AC"
+        "description": "Primary power supply"
+        "type": "iec-60320-c16"
+        "maximum_draw": 450
+        "allocated_draw": 400
+        "!ref": "{{ secondary_router_name }}:pwr-1"
+      - "!create_or_update:name": "PWR-4450-AC/2"
+        "description": "Secondary power supply"
+        "type": "iec-60320-c16"
+        "maximum_draw": 450
+        "allocated_draw": 400
+        "!ref": "{{ secondary_router_name }}:pwr-2"
+    "primary_ip4": { "!get:address": "{{ branch_prefix | network_offset('0.0.0.2/32') }}", "deferred": true }
+
+  # Distribution Switch #1
+  {% set distribution_switch_name = site_name | lower ~ '-dsw-01' %}
+  - "!create_or_update:name": "{{ distribution_switch_name }}"
+    serial: "{{ "Cisco" | generate_serial(distribution_switch_name) }}"
+    status__name: "{{ status }}"
+    device_type: "!ref:c9500_16x_devicetype"
+    role: "!ref:branch_distribution_role"
+    location: "!ref:branch_location"
+    "tenant": "!ref:tenant_branch"
+    "platform": "!ref:platform_cisco_ios"
+    "rack": "!ref:server_room_rack"
+    "position": 36
+    "face": "front"
+    "software_version": "!ref:software_cupertino"
+    "!ref": "dsw_switch_1"
+    "id": "{{ distribution_switch_name | deterministic_uuid('devices') }}"
+    interfaces:
+      - "!create_or_update:name": "Loopback1"
+        type: "virtual"
+        status__name: "{{ status }}"
+        "id": "{{ (distribution_switch_name ~ '-Loopback1') | deterministic_uuid('interfaces') }}"
+        ip_address_assignments:
+          - ip_address:
+              "!create_or_update:address": "{{ branch_prefix | network_offset('0.0.0.10/32') }}"
+              "!create_or_update:parent": "!ref:loopback_prefix"
+              "status__name": "Active"
+              "tenant": "!ref:tenant_branch"
+              "dns_name": "{{ distribution_switch_name }}.acme.net"
+              "role": "!ref:branch_loopback"
+              "id": "{{ (branch_prefix | network_offset('0.0.0.10/32')) | deterministic_uuid('ip_addresses') }}"
+
+#        ip_addresses:
+#          - "address": "{{ branch_prefix | network_offset('0.0.0.10/32') }}"
+#            "parent": "!ref:branch_prefix"
+#            status__name: Active
+#            "role": "!ref:branch_loopback"
+#            "tenant": "!ref:tenant_branch"
+#            "dns_name": "{{ distribution_switch_name }}.acme.net"
+    {% for interface_block in device_profiles['branch_c9500_16x']['interfaces']['infra_a'] %}
+      {% for name in interface_block.name | interface_range_expansion %}
+      - "!create_or_update:name": {{ name }}
+        "!ref": "{{ distribution_switch_name }}:{{ name }}"
+        type: {{ interface_block.type }}
+        role: "!ref:branch_wan_role"
+        status__name: "{{ status }}"
+        "id": "{{ (distribution_switch_name ~ '-' ~ name) | deterministic_uuid('interfaces') }}"
+      {% endfor %}
+    {% endfor %}
+    {% for interface_block in device_profiles['branch_c9500_16x']['interfaces']['infra_b'] %}
+      {% for name in interface_block.name | interface_range_expansion %}
+      - "!create_or_update:name": {{ name }}
+        "!ref": "{{ distribution_switch_name }}:{{ name }}"
+        type: {{ interface_block.type }}
+        role: "!ref:branch_wan_role"
+        status__name: "{{ status }}"
+        "id": "{{ (distribution_switch_name ~ '-' ~ name) | deterministic_uuid('interfaces') }}"
+      {% endfor %}
+    {% endfor %}
+    {% for interface_block in device_profiles['branch_c9500_16x']['interfaces']['access_a'] %}
+      {% for name in interface_block.name | interface_range_expansion %}
+      - "!create_or_update:name": {{ name }}
+        type: {{ interface_block.type }}
+        status__name: "{{ status }}"
+        role: "!ref:branch_access_role"
+        tags:
+          - "!ref:access_switch_a_allocation_tag"
+        "id": "{{ (distribution_switch_name ~ '-' ~ name) | deterministic_uuid('interfaces') }}"
+      {% endfor %}
+    {% endfor %}
+    {% for interface_block in device_profiles['branch_c9500_16x']['interfaces']['access_b'] %}
+      {% for name in interface_block.name | interface_range_expansion %}
+      - "!create_or_update:name": {{ name }}
+        type: {{ interface_block.type }}
+        status__name: "{{ status }}"
+        role: "!ref:branch_access_role"
+        tags:
+          - "!ref:access_switch_b_allocation_tag"
+        "id": "{{ (distribution_switch_name ~ '-' ~ name) | deterministic_uuid('interfaces') }}"
+      {% endfor %}
+    {% endfor %}
+    "primary_ip4": { "!get:address": "{{ branch_prefix | network_offset('0.0.0.10/32') }}", "deferred": true }
+    console_ports:
+      - "!create_or_update:name": "con0"
+        "label": "dsw01-con0"
+        "description": "Console Port"
+        "type": "rj-45"
+    power_ports:
+      - "!create_or_update:name": "PWR-C1-715WAC-P-1"
+        "type": "iec-60320-c16"
+        "maximum_draw": 590
+        "allocated_draw": 500
+        "description": "Primary power supply"
+        "!ref": "{{ distribution_switch_name }}:pwr-1"
+      - "!create_or_update:name": "PWR-C1-715WAC-P-2"
+        "type": "iec-60320-c16"
+        "maximum_draw": 590
+        "allocated_draw": 500
+        "description": "Secondary power supply"
+        "!ref": "{{ distribution_switch_name }}:pwr-2"
+    "virtual_chassis":
+      "!get:name": "{{ distribution_switch_name }}"
+    "vc_priority": 1
+    "vc_position": 1
+
+  - "!create_or_update:name": "{{ distribution_switch_name }}:2"
+    serial: "{{ "Cisco" | generate_serial(distribution_switch_name ~ ':2') }}"
+    status__name: "Planned"
+    device_type: "!ref:c9500_16x_devicetype"
+    role: "!ref:branch_distribution_role"
+    location: "!ref:branch_location"
+    "tenant": "!ref:tenant_branch"
+    "platform": "!ref:platform_cisco_ios"
+    "rack": "!ref:server_room_rack"
+    "position": 34
+    "face": "front"
+    "software_version": "!ref:software_cupertino"
+    "!ref": "dsw_switch_2"
+    "id": "{{ (distribution_switch_name ~ ':2') | deterministic_uuid('devices') }}"
+    "virtual_chassis":
+      "!get:name": "{{ distribution_switch_name }}"
+    "vc_priority": 2
+    "vc_position": 2
+
+{% set ap_name = site_name | lower ~ '-wifi-ap-01' %}
+  - "!create_or_update:name": "{{ ap_name }}"
+    serial: "{{ "HPE Aruba" | generate_serial(ap_name) }}"
+    status__name: "Active"
+    device_type: "!ref:aruba_750"
+    role: "!ref:branch_ap"
+    location: "!ref:branch_location"
+    "tenant": "!ref:tenant_branch"
+    controller_managed_device_group__name: "Aruba Wireless Devices"
+    "id": "{{ ap_name | deterministic_uuid('devices') }}"
+
+  {% set primary_pdu_name = site_name | lower ~ '-pdu-01' %}
+  {% set secondary_pdu_name = site_name | lower ~ '-pdu-02' %}
+  {% for pdu_name in [primary_pdu_name, secondary_pdu_name] %}
+  {%  if pdu_name == primary_pdu_name %}
+  {%    set pdu_address = branch_prefix | network_offset('0.0.0.4/32') %}
+  {%  else %}
+  {%    set pdu_address = branch_prefix | network_offset('0.0.0.5/32') %}
+  {%  endif %}
+  - "!create_or_update:name": "{{ pdu_name }}"
+    status__name: "{{ status }}"
+    device_type: "!ref:APC-APDU9941"
+    role: "!ref:branch_pdu"
+    location: "!ref:branch_location"
+    "tenant": "!ref:tenant_branch"
+    "rack": "!ref:server_room_rack"
+    "id": "{{ pdu_name | deterministic_uuid('devices') }}"
+    "power_ports":
+      - "!create_or_update:name": "PS1"
+        "description": "Primary power supply"
+        "type": "nema-l6-30p"
+        "!ref": "{{ pdu_name }}:PS1"
+    "power_outlets":
+    {% for index in range(1, 22) %}
+      - "!create_or_update:name": "Outlet {{ index }}"
+        "type": "iec-60320-c13"
+        "!ref": "{{ pdu_name }}:outlet-{{ index }}"
+        "power_port": "!ref:{{ pdu_name }}:PS1"
+    {% endfor %}
+    {% for index in range(22, 25) %}
+      - "!create_or_update:name": "Outlet {{ index }}"
+        "type": "iec-60320-c19"
+        "!ref": "{{ pdu_name }}:outlet-{{ index }}"
+        "power_port": "!ref:{{ pdu_name }}:PS1"
+    {% endfor %}
+    interfaces:
+      - "!create_or_update:name": "Mgmt"
+        type: "other"
+        status__name: "{{ status }}"
+        "id": "{{ (pdu_name ~ '-Mgmt') | deterministic_uuid('interfaces') }}"
+        ip_address_assignments:
+          - ip_address:
+              "!create_or_update:address": "{{ pdu_address }}"
+              "!create_or_update:parent": "!ref:loopback_prefix"
+              "status__name": "Active"
+              "tenant": "!ref:tenant_branch"
+              "dns_name": "{{ pdu_name }}.acme.net"
+              "role": "!ref:branch_loopback"
+              "id": "{{ pdu_address | deterministic_uuid('ip_addresses') }}"
+    "primary_ip4": { "!get:address": "{{ pdu_address }}", "deferred": true }
+ {% endfor %}
+
+{% if has_experimental_sdwan_deployment %}
+  - "!create_or_update:name": "{{ secondary_router_name }}_sdwan_test"
+    serial: "{{ "Cisco" | generate_serial(secondary_router_name) }}"
+    status__name: "Planned"
+    device_type: "!ref:c1111-8p"
+    role__name: "sdwan_edge"
+    location: "!ref:branch_location"
+    "tenant": "!ref:tenant_branch"
+    "platform": "!ref:platform_cisco_ios"
+    "id": "{{ (secondary_router_name ~ '_sdwan_test') | deterministic_uuid('devices') }}"
+    interfaces:
+      - "!create_or_update:name": "GigabitEthernet0/0/0"
+        status__name: "Planned"
+        type: "1000base-x-sfp"
+        "id": "{{ (secondary_router_name ~ '_sdwan_test-GigabitEthernet0/0/0') | deterministic_uuid('interfaces') }}"
+      - "!create_or_update:name": "GigabitEthernet0/0/1"
+        status__name: "Planned"
+        type: "1000base-t"
+        "id": "{{ (secondary_router_name ~ '_sdwan_test-GigabitEthernet0/0/1') | deterministic_uuid('interfaces') }}"
+      {% for i in range(8) %}
+      - "!create_or_update:name": "GigabitEthernet0/1/{{ i }}"
+        status__name: "Planned"
+        type: "1000base-t"
+        "id": "{{ (secondary_router_name ~ '_sdwan_test-GigabitEthernet0/1/' ~ i) | deterministic_uuid('interfaces') }}"
+      {% endfor %}
+{% endif %}
+
+{% if "nautobot_bgp_models" in INSTALLED_PLUGINS %}
+autonomous_systems:
+  - "!create_or_update:asn": "64567"
+    description: "ACME Private ASN"
+    status__name: "Active"
+    "!ref": "asn"
+    "id": "{{ '64567' | deterministic_uuid('autonomous_systems') }}"
+
+bgp_routing_instances:
+  - "!create_or_update:device": "!ref:primary_router_device"
+    "!create_or_update:autonomous_system": "!ref:asn"
+    status__name: "Active"
+    "!ref": "primary_router_device_routing_instance"
+    "id": "{{ (primary_router_name ~ '-64567') | deterministic_uuid('bgp_routing_instances') }}"
+  - "!create_or_update:device": "!ref:secondary_router_device"
+    "!create_or_update:autonomous_system": "!ref:asn"
+    status__name: "Active"
+    "!ref": "secondary_router_device_routing_instance"
+    "id": "{{ (secondary_router_name ~ '-64567') | deterministic_uuid('bgp_routing_instances') }}"
+
+bgp_peerings:
+  - status__name: "Active"
+    endpoints:
+      - routing_instance: "!ref:primary_router_device_routing_instance"
+        source_interface: "!ref:primary_router_device_lo1"
+        "id": "{{ (primary_router_name ~ '-l01') | deterministic_uuid('endpoints') }}"
+
+      - routing_instance: "!ref:secondary_router_device_routing_instance"
+        source_interface: "!ref:secondary_router_device_lo1"
+        "id": "{{ (secondary_router_name ~ '-l01') | deterministic_uuid('endpoints') }}"
+{% endif %}
+
+circuits:
+  - provider__name: {{ branch_provider[region_name]['primary'] }}
+    description: "Primary Dark Fiber circuit for {{ site_name | lower }}"
+    "!create_or_update:cid": "{{ branch_provider[region_name]['primary'] | generate_circuit_id(site_name~'primary') }}"
+    circuit_type__name: "Dark Fiber"
+    status__name: "{{ status }}"
+    custom_fields:
+      "circuit_redundancy": "primary"
+    "!ref": "primary_circuit"
+    "id": "{{ (branch_provider[region_name]['primary'] | generate_circuit_id(site_name~'primary')) | deterministic_uuid('circuits') }}"
+
+  - provider__name: {{ branch_provider[region_name]['backup'] }}
+    description: "Secondary Transit Circuit for {{ site_name | lower }}"
+    "!create_or_update:cid": "{{ branch_provider[region_name]['backup'] | generate_circuit_id(site_name~'backup') }}"
+    circuit_type__name: "Transit"
+    status__name: "{{ status }}"
+    custom_fields:
+      "circuit_redundancy": "secondary"
+    "!ref": "secondary_circuit"
+    "id": "{{ (branch_provider[region_name]['backup'] | generate_circuit_id(site_name~'backup')) | deterministic_uuid('circuits') }}"
+
+circuit_terminations:
+  - "!create_or_update:circuit": "!ref:primary_circuit"
+    "!create_or_update:term_side": "A"
+    "location": "!ref:branch_location"
+    "description": "{{ site_name | lower }} site Termination"
+    "!ref": "primary_circuit_termination"
+    "id": "{{ (branch_provider[region_name]['primary'] | generate_circuit_id(site_name~'primary') ~ "-A") | deterministic_uuid('circuit_terminations') }}"
+
+  - "!create_or_update:circuit": "!ref:primary_circuit"
+    "!create_or_update:term_side": "Z"
+    "provider_network__name": "Verizon Provider Network"
+    "description": "Verizon Termination"
+    "id": "{{ (branch_provider[region_name]['primary'] | generate_circuit_id(site_name~'primary') ~ "-Z") | deterministic_uuid('circuit_terminations') }}"
+
+  - "!create_or_update:circuit": "!ref:secondary_circuit"
+    "!create_or_update:term_side": "A"
+    "location": "!ref:branch_location"
+    "description": "{{ site_name | lower }} site Termination"
+    "!ref": "secondary_circuit_termination"
+    "id": "{{ (branch_provider[region_name]['backup'] | generate_circuit_id(site_name~'primary') ~ "-A") | deterministic_uuid('circuit_terminations') }}"
+
+  - "!create_or_update:circuit": "!ref:secondary_circuit"
+    "!create_or_update:term_side": "Z"
+    "provider_network__name": "NTT Provider Network"
+    "description": "NTT Termination"
+    "id": "{{ (branch_provider[region_name]['backup'] | generate_circuit_id(site_name~'primary') ~ "-Z") | deterministic_uuid('circuit_terminations') }}"
+
+cables:
+    # Circuit and cable links
+    - "!create_or_update:termination_a_id": "!ref:{{ primary_router_name }}:wan.id"
+      "!create_or_update:termination_b_id": "!ref:primary_circuit_termination.id"
+      termination_a: "!ref:{{ primary_router_name }}:wan"
+      termination_b: "!ref:primary_circuit_termination"
+      status__name: "Connected"
+      label: "EXTCAB#{{ site_name | lower }}#000001"
+      "id": "{{ ('EXTCAB#' ~ site_name ~ '#000001') | deterministic_uuid('cables') }}"
+
+    - "!create_or_update:termination_a_id": "!ref:{{ secondary_router_name }}:wan.id"
+      "!create_or_update:termination_b_id": "!ref:secondary_circuit_termination.id"
+      termination_a: "!ref:{{ secondary_router_name }}:wan"
+      termination_b: "!ref:secondary_circuit_termination"
+      status__name: "Planned"
+      label: "EXTCAB#{{ site_name | lower }}#000002"
+      "id": "{{ ('EXTCAB#' ~ site_name ~ '#000002') | deterministic_uuid('cables') }}"
+
+    - "!create_or_update:termination_a_id": "!ref:{{ primary_router_name }}:GigabitEthernet0/0/0.id"
+      "!create_or_update:termination_b_id": "!ref:{{ distribution_switch_name }}:TenGigabitEthernet1/0/1.id"
+      termination_a: "!ref:{{ primary_router_name }}:GigabitEthernet0/0/0"
+      termination_b: "!ref:{{ distribution_switch_name }}:TenGigabitEthernet1/0/1"
+      status__name: "Connected"
+      label: "INTCAB#{{ site_name | lower }}#000001"
+      "id": "{{ ('INTCAB#' ~ site_name ~ '#000001') | deterministic_uuid('cables') }}"
+
+    - "!create_or_update:termination_a_id": "!ref:{{ primary_router_name }}:GigabitEthernet0/0/1.id"
+      "!create_or_update:termination_b_id": "!ref:{{ distribution_switch_name }}:TenGigabitEthernet2/0/1.id"
+      termination_a: "!ref:{{ primary_router_name }}:GigabitEthernet0/0/1"
+      termination_b: "!ref:{{ distribution_switch_name }}:TenGigabitEthernet2/0/1"
+      status__name: "Planned"
+      label: "INTCAB#{{ site_name | lower }}#000002"
+      "id": "{{ ('INTCAB#' ~ site_name ~ '#000002') | deterministic_uuid('cables') }}"
+
+    - "!create_or_update:termination_a_id": "!ref:{{ secondary_router_name }}:GigabitEthernet0/0/0.id"
+      "!create_or_update:termination_b_id": "!ref:{{ distribution_switch_name }}:TenGigabitEthernet1/0/2.id"
+      termination_a: "!ref:{{ secondary_router_name }}:GigabitEthernet0/0/0"
+      termination_b: "!ref:{{ distribution_switch_name }}:TenGigabitEthernet1/0/2"
+      status__name: "Connected"
+      label: "INTCAB#{{ site_name | lower }}#000003"
+      "id": "{{ ('INTCAB#' ~ site_name ~ '#000003') | deterministic_uuid('cables') }}"
+
+    - "!create_or_update:termination_a_id": "!ref:{{ secondary_router_name }}:GigabitEthernet0/0/1.id"
+      "!create_or_update:termination_b_id": "!ref:{{ distribution_switch_name }}:TenGigabitEthernet2/0/2.id"
+      termination_a: "!ref:{{ secondary_router_name }}:GigabitEthernet0/0/1"
+      termination_b: "!ref:{{ distribution_switch_name }}:TenGigabitEthernet2/0/2"
+      status__name: "Planned"
+      label: "INTCAB#{{ site_name | lower }}#000004"
+      "id": "{{ ('INTCAB#' ~ site_name ~ '#000004') | deterministic_uuid('cables') }}"
+
+    # Power links
+    - "!create_or_update:termination_a_id": "!ref:{{ primary_pdu_name }}:PS1.id"
+      "!create_or_update:termination_b_id": "!ref:power_feed_{{ site_name | lower }}-pdu-01.id"
+      termination_a: "!ref:{{ primary_pdu_name }}:PS1"
+      termination_b: "!ref:power_feed_{{ site_name | lower }}-pdu-01"
+      status__name: "Connected"
+      label: "POWERCAB#{{ site_name | lower }}#000001"
+      "id": "{{ ('POWERCAB#' ~ site_name ~ '#000001') | deterministic_uuid('cables') }}"
+
+    - "!create_or_update:termination_a_id": "!ref:{{ secondary_pdu_name }}:PS1.id"
+      "!create_or_update:termination_b_id": "!ref:power_feed_{{ site_name | lower }}-pdu-02.id"
+      termination_a: "!ref:{{ secondary_pdu_name }}:PS1"
+      termination_b: "!ref:power_feed_{{ site_name | lower }}-pdu-02"
+      status__name: "Connected"
+      label: "POWERCAB#{{ site_name | lower }}#000002"
+      "id": "{{ ('POWERCAB#' ~ site_name ~ '#000002') | deterministic_uuid('cables') }}"
+
+    - "!create_or_update:termination_a_id": "!ref:{{ primary_pdu_name }}:outlet-1.id"
+      "!create_or_update:termination_b_id": "!ref:{{ primary_router_name }}:pwr-1.id"
+      termination_a: "!ref:{{ primary_pdu_name }}:outlet-1"
+      termination_b: "!ref:{{ primary_router_name }}:pwr-1"
+      status__name: "Connected"
+      label: "POWERCAB#{{ site_name | lower }}#000003"
+      "id": "{{ ('POWERCAB#' ~ site_name ~ '#000003') | deterministic_uuid('cables') }}"
+
+    - "!create_or_update:termination_a_id": "!ref:{{ secondary_pdu_name }}:outlet-1.id"
+      "!create_or_update:termination_b_id": "!ref:{{ primary_router_name }}:pwr-2.id"
+      termination_a: "!ref:{{ secondary_pdu_name }}:outlet-1"
+      termination_b: "!ref:{{ primary_router_name }}:pwr-2"
+      status__name: "Connected"
+      label: "POWERCAB#{{ site_name | lower }}#000004"
+      "id": "{{ ('POWERCAB#' ~ site_name ~ '#000004') | deterministic_uuid('cables') }}"
+
+    - "!create_or_update:termination_a_id": "!ref:{{ primary_pdu_name }}:outlet-2.id"
+      "!create_or_update:termination_b_id": "!ref:{{ secondary_router_name }}:pwr-1.id"
+      termination_a: "!ref:{{ primary_pdu_name }}:outlet-2"
+      termination_b: "!ref:{{ secondary_router_name }}:pwr-1"
+      status__name: "Connected"
+      label: "POWERCAB#{{ site_name | lower }}#000005"
+      "id": "{{ ('POWERCAB#' ~ site_name ~ '#000005') | deterministic_uuid('cables') }}"
+
+    - "!create_or_update:termination_a_id": "!ref:{{ secondary_pdu_name }}:outlet-2.id"
+      "!create_or_update:termination_b_id": "!ref:{{ secondary_router_name }}:pwr-2.id"
+      termination_a: "!ref:{{ secondary_pdu_name }}:outlet-2"
+      termination_b: "!ref:{{ secondary_router_name }}:pwr-2"
+      status__name: "Connected"
+      label: "POWERCAB#{{ site_name | lower }}#000006"
+      "id": "{{ ('POWERCAB#' ~ site_name ~ '#000006') | deterministic_uuid('cables') }}"
+
+    - "!create_or_update:termination_a_id": "!ref:{{ primary_pdu_name }}:outlet-3.id"
+      "!create_or_update:termination_b_id": "!ref:{{ distribution_switch_name }}:pwr-1.id"
+      termination_a: "!ref:{{ primary_pdu_name }}:outlet-3"
+      termination_b: "!ref:{{ distribution_switch_name }}:pwr-1"
+      status__name: "Connected"
+      label: "POWERCAB#{{ site_name | lower }}#000007"
+      "id": "{{ ('POWERCAB#' ~ site_name ~ '#000007') | deterministic_uuid('cables') }}"
+
+    - "!create_or_update:termination_a_id": "!ref:{{ secondary_pdu_name }}:outlet-3.id"
+      "!create_or_update:termination_b_id": "!ref:{{ distribution_switch_name }}:pwr-2.id"
+      termination_a: "!ref:{{ secondary_pdu_name }}:outlet-3"
+      termination_b: "!ref:{{ distribution_switch_name }}:pwr-2"
+      status__name: "Connected"
+      label: "POWERCAB#{{ site_name | lower }}#000008"
+      "id": "{{ ('POWERCAB#' ~ site_name ~ '#000008') | deterministic_uuid('cables') }}"
