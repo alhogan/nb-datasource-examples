@@ -54,6 +54,7 @@ class CreateBranch(DesignJob):
     region_name = StringVar(
         description="Region of the new site",
         label="Region Name",
+        default="AMER",
     )
     country_name = StringVar(
         description="Country of the new site",
