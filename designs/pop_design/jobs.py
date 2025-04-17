@@ -47,22 +47,46 @@ class CreateBase(DesignJob):
 class CreateBranch(DesignJob):
     """Job to create a new site of type Branch."""
 
-    site_name = StringVar(description="Site Name", label="Site Name")
-    region_name = StringVar(description="Region of the new site", label="Region Name")
+    site_name = StringVar(
+        description="Site Name",
+        label="Site Name",
+    )
+    region_name = StringVar(
+        description="Region of the new site",
+        label="Region Name",
+    )
     country_name = StringVar(
-        description="Country of the new site", label="Country Name"
+        description="Country of the new site",
+        label="Country Name",
+        default="United States of America",
     )
     site_facility = StringVar(
-        description="Facility of the new site", label="Facility Name"
+        description="Facility of the new site",
+        label="Facility Name",
     )
-    status = StringVar(description="Status the new site", label="Site Status")
-    site_latitude = StringVar(description="Site latitude", label="Site latitude")
-    site_longitude = StringVar(description="Longitude", label="Longitude")
+    status = StringVar(
+        description="Status the new site",
+        label="Site Status",
+        default="Planned",
+    )
+    site_latitude = StringVar(
+        description="Site latitude",
+        label="Site latitude",
+        default="50.000000",
+    )
+    site_longitude = StringVar(
+        description="Longitude",
+        label="Longitude",
+        default="50.000000",
+    )
     physical_address = StringVar(
-        description="Physical Address", label="Physical Address"
+        description="Physical Address",
+        label="Physical Address",
+        default="100 Network Drive, Somewhere, TX 70000",
     )
     has_experimental_sdwan_deployment = BooleanVar(
-        description="Experimental SDWAN", label="Experimental SDWAN"
+        description="Experimental SDWAN",
+        label="Experimental SDWAN",
     )
 
     class Meta:
